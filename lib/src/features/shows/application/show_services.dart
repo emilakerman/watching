@@ -11,4 +11,13 @@ class ShowService {
     final jsonResponse = await _tvMazeRepository.getAllShows();
     return jsonResponse.map((json) => Show.fromJson(json)).toList();
   }
+
+  // TODO(Emil): Filter right away and create different lists for each genre and store in a cubit?
+  // Several cubits? Local storage?
+  Future<List<Show>> filterByGenre() {
+    final allShows = getAllShows();
+    return allShows.then((shows) {
+      return shows.where((show) => show.genres.contains('Drama')).toList();
+    });
+  }
 }
