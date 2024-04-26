@@ -26,9 +26,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        break;
+        return macos;
       case TargetPlatform.windows:
-        break;
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -66,5 +66,25 @@ class DefaultFirebaseOptions {
     storageBucket: dotenv.env['storageBucket']!,
     iosClientId: dotenv.env['iosClientId']!,
     iosBundleId: dotenv.env['iosBundleId']!,
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyB8rcAHR_h4HrrFthUwRZUgZpOFJHqsuVU',
+    appId: '1:943566948341:ios:fa708d5438764166a402bc',
+    messagingSenderId: '943566948341',
+    projectId: 'watching-development',
+    storageBucket: 'watching-development.appspot.com',
+    iosClientId:
+        '943566948341-q9gsi9qh77htgtjf4r3fufrb8q9lemti.apps.googleusercontent.com',
+    iosBundleId: 'com.example.watching',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: '',
+    appId: '',
+    messagingSenderId: '',
+    projectId: 'watching-development',
+    authDomain: 'watching-development.firebaseapp.com',
+    storageBucket: 'watching-development.appspot.com',
   );
 }
