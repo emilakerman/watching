@@ -10,7 +10,7 @@ class DiscoverScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => ShowCubit(
         showService: ShowService(
-          tvMazeRepository: TvMazeRepository(client: 'https://api.tvmaze.com/'),
+          tvMazeRepository: TvMazeRepository(),
         ),
       ),
       child: BlocBuilder<ShowCubit, ShowCubitState>(

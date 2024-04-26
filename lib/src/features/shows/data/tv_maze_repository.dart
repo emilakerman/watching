@@ -4,12 +4,12 @@ import 'package:http/http.dart';
 import 'package:logger/web.dart';
 
 class TvMazeRepository {
-  TvMazeRepository({required String client}) {
-    client = 'https://api.tvmaze.com/';
+  TvMazeRepository() {
+    _client = 'https://api.tvmaze.com/';
   }
 
   Future<String> getShowByName({required String showName}) async {
-    final String url = '${client}singlesearch/shows?q=$showName';
+    final String url = '${_client}singlesearch/shows?q=$showName';
     final Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final String show = response.body;
@@ -21,7 +21,7 @@ class TvMazeRepository {
   }
 
   Future<dynamic> getAllShows() async {
-    final String url = '${client}shows';
+    final String url = '${_client}shows';
     final Response response = await http.get(Uri.parse(url));
     Logger().d('Fetching shows....');
     if (response.statusCode != 200) {
@@ -33,5 +33,5 @@ class TvMazeRepository {
     }
   }
 
-  late final String client;
+  late final String _client;
 }

@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:watching/src/src.dart';
 
 class ShowService {
@@ -8,9 +7,10 @@ class ShowService {
 
   Future<List<Show>> getAllShows() async {
     final jsonResponse = await _tvMazeRepository.getAllShows();
-    return jsonResponse.map((json) => Show.fromJsonShow(json)).toList();
-
-    // final shows = jsonResponse.value.map(Show.fromJsonShow).toList();
+    final shows = (jsonResponse as List)
+        .map((show) => Show.fromJson(show as Map<String, dynamic>))
+        .toList();
+    return shows;
   }
 
   final TvMazeRepository _tvMazeRepository;

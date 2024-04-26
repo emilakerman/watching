@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -46,6 +48,7 @@ class ShowCubit extends Cubit<ShowCubitState> {
         ),
       );
     } catch (error) {
+      Logger().d(error.toString());
       emit(
         state.copyWith(
           status: ShowsCubitStatus.error,
