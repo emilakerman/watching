@@ -12,8 +12,8 @@ migrate_working_dir/
 
 # Secrets / Environments
 *.env
-dotEnv
-.env
+.env.stage
+dotEnv.*
 
 # IntelliJ related
 *.iml
@@ -34,6 +34,7 @@ dotEnv
 *.g.dart
 *.freezed.dart
 *.mocks.dart
+**/pubspec.lock
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -102,7 +103,6 @@ coverage/
 packages/**/pubspec.lock
 
 # Web related
-lib/generated_plugin_registrant.dart
 # Exceptions to above rules
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 # iOS related
