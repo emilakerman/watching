@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:watching/src/src.dart';
 
-class AuthenticationScreen extends StatelessWidget {
+class AuthenticationScreen extends StatefulWidget {
   const AuthenticationScreen({super.key});
 
   @override
+  State<AuthenticationScreen> createState() => _AuthenticationScreenState();
+}
+
+class _AuthenticationScreenState extends State<AuthenticationScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  @override
   Widget build(BuildContext context) {
+    final FirebaseAuthRepository authRepository = FirebaseAuthRepository();
     return Scaffold(
       backgroundColor: const Color(0xff0f2829),
       body: Center(
@@ -40,16 +49,24 @@ class AuthenticationScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: emailController,
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+                decoration: const InputDecoration(
                   hintText: "Email",
                   hintStyle: TextStyle(
                     color: Colors.grey,
                   ),
                 ),
               ),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: passwordController,
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+                decoration: const InputDecoration(
                   hintText: "Password",
                   hintStyle: TextStyle(
                     color: Colors.grey,
@@ -61,6 +78,7 @@ class AuthenticationScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   InkWell(
+                    splashColor: Colors.green[900],
                     onTap: () => {},
                     child: const Text(
                       "Forgot password?",
@@ -70,7 +88,11 @@ class AuthenticationScreen extends StatelessWidget {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => authRepository.signInUser(
+                      email: emailController.text,
+                      password: passwordController.text,
+                      context: context,
+                    ),
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
                         const Color(0xff3ca092),
