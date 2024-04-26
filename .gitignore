@@ -9,6 +9,10 @@
 .history
 .svn/
 migrate_working_dir/
+firebase.json
+google-services.json
+GoogleService-Info.plist
+
 
 # Secrets / Environments
 *.env
