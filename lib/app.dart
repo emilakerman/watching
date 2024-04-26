@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'src/src.dart';
+import 'package:watching/core/core.dart';
+import 'config/config.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
-
+  const App(this.environment, {super.key});
+  final WatchingEnvironment environment;
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: AuthenticationScreen(),
+    final watchingRouter = WatchingRouter().router;
+    return MaterialApp.router(
+      routerConfig: watchingRouter,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

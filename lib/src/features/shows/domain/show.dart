@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'show.freezed.dart';
-part 'show.g.dart';
 
 @freezed
 class Show with _$Show {
@@ -12,8 +11,16 @@ class Show with _$Show {
     required String language,
     required List<String> genres,
     required String summary,
-    // Add other fields as needed
   }) = _Show;
 
-  factory Show.fromJson(Map<String, dynamic> json) => _$ShowFromJson(json);
+  factory Show.fromJsonShow(Map<String, dynamic> data) {
+    return Show(
+      id: data['id'] as int,
+      name: data['name'] as String,
+      type: data['type'] as String,
+      language: data['language'] as String,
+      genres: data['genres'] as List<String>,
+      summary: data['summary'] as String,
+    );
+  }
 }

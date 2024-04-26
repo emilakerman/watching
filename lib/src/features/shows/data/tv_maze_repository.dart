@@ -1,27 +1,37 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:logger/web.dart';
 
 class TvMazeRepository {
-  TvMazeRepository();
+  TvMazeRepository({required String client}) {
+    client = 'https://api.tvmaze.com/';
+  }
 
   Future<String> getShowByName({required String showName}) async {
-    final url = 'https://api.tvmaze.com/singlesearch/shows?q=$showName';
-    final response = await http.get(Uri.parse(url));
+    final String url = '${client}singlesearch/shows?q=$showName';
+    final Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      final show = response.body;
+      final String show = response.body;
       return show;
     } else {
-      throw Exception('Failed to fetch series');
+      Logger().d('Failed to fetch shows by genre');
+      throw Exception('Failed to fetch shows by genre');
     }
   }
 
-  Future<List<dynamic>> getAllShows() async {
-    const url = 'https://api.tvmaze.com/shows';
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
+  Future<dynamic> getAllShows() async {
+    final String url = '${client}shows';
+    final Response response = await http.get(Uri.parse(url));
+    Logger().d('Fetching shows....');
+    if (response.statusCode != 200) {
+      Logger().d('Failed to fetch shows');
+      return [];
     } else {
-      throw Exception('Failed to fetch series');
+      Logger().d('Fetched shows successfully!');
+      return json.decode(response.body);
     }
   }
+
+  late final String client;
 }
