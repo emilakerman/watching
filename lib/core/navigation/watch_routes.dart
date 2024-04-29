@@ -29,7 +29,7 @@ final watchingRoutes = [
                 // TODO(Any): Implement navigation to profile or something similar.
                 child: GestureDetector(
                   onTap: () {},
-                  child: CircleAvatar(
+                  child: const CircleAvatar(
                     radius: 15,
                     backgroundImage: AssetImage(
                       'assets/images/default_avatar.png',
