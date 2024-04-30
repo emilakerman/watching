@@ -41,6 +41,8 @@ dotEnv.*
 **/pubspec.lock
 
 # Flutter/Dart/Pub related
+**/ios/Runner.xcodeproj/
+Podfile
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -149,3 +151,5 @@ app.*.map.json
 !.idea/codeStyles/
 !.idea/dictionaries/
 !.idea/runConfigurations/
+*.pbxproj
+ios/Runner.xcodeproj/project.pbxproj

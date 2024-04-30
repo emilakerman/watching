@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/src.dart';
@@ -14,6 +15,30 @@ final watchingRoutes = [
       } else {
         return Scaffold(
           key: scaffoldKey,
+          appBar: AppBar(
+            title: const Text('Watching'),
+            leading: IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                scaffoldKey.currentState!.openDrawer();
+              },
+            ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: 15.0),
+                // TODO(Any): Implement navigation to profile or something similar.
+                child: GestureDetector(
+                  onTap: () {},
+                  child: const CircleAvatar(
+                    radius: 15,
+                    backgroundImage: AssetImage(
+                      'assets/images/default_avatar.png',
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
           body: child,
         );
       }
