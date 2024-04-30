@@ -10,6 +10,17 @@ class AppTheme {
       brightness: Brightness.dark,
       textTheme: const TextTheme(
         bodyMedium: TextStyle(color: Colors.white),
+        displayLarge: TextStyle(
+          fontSize: 22,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          overflow: TextOverflow.ellipsis,
+        ),
+        displayMedium: TextStyle(
+          fontSize: 14,
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
