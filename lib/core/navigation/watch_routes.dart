@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/src.dart';
@@ -25,7 +24,7 @@ final watchingRoutes = [
             ),
             actions: [
               Padding(
-                padding: EdgeInsets.only(right: 15.0),
+                padding: const EdgeInsets.only(right: 15.0),
                 // TODO(Any): Implement navigation to profile or something similar.
                 child: GestureDetector(
                   onTap: () {},
