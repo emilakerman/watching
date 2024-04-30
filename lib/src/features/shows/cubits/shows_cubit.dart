@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -41,6 +39,7 @@ class ShowCubit extends Cubit<ShowCubitState> {
     try {
       emit(state.copyWith(status: ShowsCubitStatus.loading));
       final List<Show> fetchedShows = await _showService.getAllShows();
+      Logger().d('Shows length: ${fetchedShows.length} ');
       emit(
         state.copyWith(
           status: ShowsCubitStatus.success,

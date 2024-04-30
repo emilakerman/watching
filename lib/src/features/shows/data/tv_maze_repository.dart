@@ -2,13 +2,20 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:logger/web.dart';
+import 'package:watching/src/src.dart';
 
 class TvMazeRepository {
   TvMazeRepository() {
     _client = 'https://api.tvmaze.com/';
   }
+  final FirebaseAuthRepository _firebaseAuthRepository =
+      FirebaseAuthRepository();
 
   Future<String> getShowByName({required String showName}) async {
+    if (!_firebaseAuthRepository.isAuthenticated()) {
+      Logger().d('User is not authenticated');
+      return '';
+    }
     final String url = '${_client}singlesearch/shows?q=$showName';
     final Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
