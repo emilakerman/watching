@@ -9,35 +9,38 @@ final watchingRoutes = [
   ShellRoute(
     builder: (context, state, child) {
       final isOnLoginPage = state.fullPath == WatchingRoutesNames.root.path;
+      final isOnProfilePage = state.fullPath == '/discover/profile';
       if (isOnLoginPage) {
         return child;
       } else {
         return Scaffold(
           key: scaffoldKey,
-          appBar: AppBar(
-            title: const Text('Watching'),
-            leading: IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                scaffoldKey.currentState!.openDrawer();
-              },
-            ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 15.0),
-                // TODO(Any): Implement navigation to profile or something similar.
-                child: GestureDetector(
-                  onTap: () {},
-                  child: const CircleAvatar(
-                    radius: 15,
-                    backgroundImage: AssetImage(
-                      'assets/images/default_avatar.png',
-                    ),
+          appBar: !isOnProfilePage
+              ? AppBar(
+                  title: const Text('Watching'),
+                  leading: IconButton(
+                    icon: const Icon(Icons.menu),
+                    onPressed: () {
+                      scaffoldKey.currentState!.openDrawer();
+                    },
                   ),
-                ),
-              ),
-            ],
-          ),
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15.0),
+                      child: GestureDetector(
+                        onTap: () =>
+                            context.goNamed(WatchingRoutesNames.profile),
+                        child: const CircleAvatar(
+                          radius: 15,
+                          backgroundImage: AssetImage(
+                            'assets/images/default_avatar.png',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              : null,
           body: child,
         );
       }
@@ -60,11 +63,11 @@ final _rootRoute = GoRoute(
     );
   },
   routes: [
-    _profileRoute,
+    _discoverRoute,
   ],
   redirect: (context, state) {
     final isOnRoot = state.fullPath == WatchingRoutesNames.root.path;
-    final isAuthenticated = authRepository.getUser() != null;
+    final isAuthenticated = authRepository.isAuthenticated();
     if (!isAuthenticated) {
       return WatchingRoutesNames.root.path;
     }
@@ -75,13 +78,27 @@ final _rootRoute = GoRoute(
   },
 );
 
-/// --- Patients route
-final _profileRoute = GoRoute(
+/// --- Discover route
+final _discoverRoute = GoRoute(
   path: WatchingRoutesNames.discover,
   name: WatchingRoutesNames.discover,
   builder: (context, state) {
     return const DiscoverScreen(
       key: Key(WatchingRoutesNames.discover),
+    );
+  },
+  routes: [
+    _profileRoute,
+  ],
+);
+
+/// --- Profile route
+final _profileRoute = GoRoute(
+  path: WatchingRoutesNames.profile,
+  name: WatchingRoutesNames.profile,
+  builder: (context, state) {
+    return const ProfileScreen(
+      key: Key(WatchingRoutesNames.profile),
     );
   },
   routes: const [],
