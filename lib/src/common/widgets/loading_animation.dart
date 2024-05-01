@@ -8,12 +8,9 @@ class LoadingAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Shimmer.fromColors(
-        baseColor: Colors.purple,
+        baseColor: Colors.grey,
         highlightColor: const Color.fromARGB(255, 28, 71, 30),
-        child: const Icon(
-          Icons.movie_filter,
-          size: 100,
-        ),
+        child: const CircularProgressIndicator(),
       ),
     );
   }
