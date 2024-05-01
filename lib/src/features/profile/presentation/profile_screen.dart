@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:watching/src/features/profile/presentation/mock_favorites.dart';
 import 'package:watching/src/src.dart';
 
@@ -104,6 +105,9 @@ class FavoritesCard extends StatelessWidget {
                       // TODO(Any): Replace with real favorites.
                       return CachedNetworkImage(
                         imageUrl: mockFavorites[index],
+                        progressIndicatorBuilder: (context, url, progress) {
+                          return const LoadingAnimation();
+                        },
                       );
                     },
                   ),
