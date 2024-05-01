@@ -26,7 +26,30 @@ class AuthCubitState with _$AuthCubitState {
 class AuthCubit extends Cubit<AuthCubitState> {
   AuthCubit({required FirebaseAuthRepository firebaseAuthRepository})
       : _firebaseAuthRepository = firebaseAuthRepository,
-        super(AuthCubitState());
+        super(AuthCubitState()) {
+    getUser();
+  }
+
+  Future<void> getUser() async {
+    emit(state.copyWith(status: AuthCubitStatus.loading));
+    try {
+      final user = _firebaseAuthRepository.getUser();
+      emit(
+        state.copyWith(
+          status: AuthCubitStatus.success,
+          user: user,
+        ),
+      );
+    } catch (error) {
+      Logger().d('Error: $error');
+      emit(
+        state.copyWith(
+          status: AuthCubitStatus.error,
+          errorMessage: 'Error!',
+        ),
+      );
+    }
+  }
 
   Future<void> signInUser(
     BuildContext context, {

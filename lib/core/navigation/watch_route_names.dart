@@ -6,8 +6,11 @@ class WatchingRoutesNames {
   /// Route is: (login) /
   static const home = root;
 
-  /// Route is: profile
+  /// Route is: discover
   static const discover = 'discover';
+
+  /// Route is: profile
+  static const profile = 'profile';
 }
 
 extension RoutesX on String {
