@@ -27,6 +27,17 @@ class TvMazeRepository {
     }
   }
 
+  Future<dynamic> getShowById({required int showId}) async {
+    final String url = '${_client}shows/$showId';
+    final Response response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      Logger().d('Failed to fetch show by id');
+      throw Exception('Failed to fetch show by id');
+    }
+  }
+
   Future<dynamic> getAllShows() async {
     final String url = '${_client}shows';
     final Response response = await http.get(Uri.parse(url));

@@ -54,66 +54,88 @@ class FavoritesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return SizedBox(
-      height: 200,
-      width: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Favorites",
-                      style: textTheme.displayLarge,
-                    ),
-                    // TODO(Any): Implement navigation to view all favorites or bottom sheet.
-                    InkWell(
-                      onTap: () => {},
-                      child: Text(
-                        "View All",
-                        style: textTheme.displayMedium?.copyWith(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 3),
-                // TODO(Any): Replace with real badges count.
-                Text(
-                  "2 favorites",
-                  style: textTheme.displayMedium,
-                ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: 10),
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.only(bottom: 15),
-                    itemCount: mockFavorites.length,
-                    itemBuilder: (context, index) {
-                      // TODO(Any): Replace with real favorites.
-                      return CachedNetworkImage(
-                        imageUrl: mockFavorites[index],
-                        progressIndicatorBuilder: (context, url, progress) {
-                          return const LoadingAnimation();
-                        },
+    return BlocProvider(
+      create: (context) => AuthCubit(
+        firebaseAuthRepository: FirebaseAuthRepository(),
+      ),
+      child: BlocBuilder<AuthCubit, AuthCubitState>(
+        builder: (context, state) {
+          final ShowService showService = ShowService(
+            tvMazeRepository: TvMazeRepository(),
+          );
+          final Future<List<Show>> shows = showService.getFavoritesByUserId(
+            userId: state.user!.uid.hashCode,
+          );
+          return SizedBox(
+            height: 200,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: FutureBuilder(
+                    future: shows,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const LoadingAnimation();
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Favorites",
+                                style: textTheme.displayLarge,
+                              ),
+                              // TODO(Any): Implement navigation to view all favorites or bottom sheet.
+                              InkWell(
+                                onTap: () => {},
+                                child: Text(
+                                  "View All",
+                                  style: textTheme.displayMedium?.copyWith(
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            "${snapshot.data!.length} favorites",
+                            style: textTheme.displayMedium,
+                          ),
+                          const SizedBox(height: 10),
+                          Expanded(
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(width: 10),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: snapshot.data?.length ?? 0,
+                              padding: const EdgeInsets.only(bottom: 10),
+                              itemBuilder: (context, index) =>
+                                  CachedNetworkImage(
+                                imageUrl: snapshot.data?[index].image?.medium ??
+                                    'https://via.placeholder.com/150',
+                                progressIndicatorBuilder:
+                                    (context, url, progress) {
+                                  return const LoadingAnimation();
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
