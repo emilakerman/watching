@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:watching/src/features/profile/presentation/mock_favorites.dart';
 import 'package:watching/src/src.dart';
 
@@ -12,7 +11,6 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FirebaseAuthRepository firebaseAuthRepo = FirebaseAuthRepository();
-    final textTheme = Theme.of(context).textTheme;
     return BlocProvider(
       create: (context) => AuthCubit(
         firebaseAuthRepository: firebaseAuthRepo,
