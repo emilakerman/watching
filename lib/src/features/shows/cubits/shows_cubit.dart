@@ -2,7 +2,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:watching/src/features/shows/shows.dart';
+import 'package:watching/utils/date_extension.dart';
+
+import '../../../../core/core.dart';
 
 part 'shows_cubit.freezed.dart';
 
@@ -34,12 +38,26 @@ class ShowCubit extends Cubit<ShowCubitState> {
     getAllShows();
   }
 
+  final LocallyStoredDates _localStorage = LocallyStoredDates();
+  final LocallyStoredShows _localShows = LocallyStoredShows();
+
   Future<void> getAllShows() async {
-    // TODO(Emil): This is a big fetch. We should consider perhaps only running this one once a day or so.
-    // check right here if its been run today already, if so, dont run it again.
     try {
+      if (await _localStorage
+          .isDateTimeStored(DateTime.now().formattedDate())) {
+        Logger().d('Already fetched today. Displaying Local Copy.');
+        emit(
+          state.copyWith(
+            status: ShowsCubitStatus.success,
+            shows: await _localShows.readShows(),
+          ),
+        );
+        return;
+      }
+      await _localStorage.addDateTime(DateTime.now().formattedDate());
       emit(state.copyWith(status: ShowsCubitStatus.loading));
       final List<Show> fetchedShows = await _showService.getAllShows();
+      await _localShows.addShows(fetchedShows);
       Logger().d('Shows length: ${fetchedShows.length} ');
       emit(
         state.copyWith(
