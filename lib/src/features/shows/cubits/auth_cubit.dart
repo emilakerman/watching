@@ -34,6 +34,7 @@ class AuthCubit extends Cubit<AuthCubitState> {
     emit(state.copyWith(status: AuthCubitStatus.loading));
     try {
       final user = _firebaseAuthRepository.getUser();
+      Logger().d('User uid: ${user?.uid}');
       emit(
         state.copyWith(
           status: AuthCubitStatus.success,
@@ -50,6 +51,8 @@ class AuthCubit extends Cubit<AuthCubitState> {
       );
     }
   }
+
+  SupabaseRepository get supabaseRepository => SupabaseRepository();
 
   Future<void> signInUser(
     BuildContext context, {
@@ -69,6 +72,17 @@ class AuthCubit extends Cubit<AuthCubitState> {
           user: _firebaseAuthRepository.getUser(),
         ),
       );
+      // IMPORTANT: Creates the user row in Supabase with uid.hashCode
+      // as userId if the user is not already in the database.
+      if (!await supabaseRepository.checkIfUserExistsInSupabase(
+        userId: _firebaseAuthRepository.getUser()!.uid.hashCode,
+      )) {
+        await supabaseRepository.createUserRowInSupaBase(
+          userId: _firebaseAuthRepository.getUser()!.uid.hashCode,
+        );
+      } else {
+        return;
+      }
     } catch (error) {
       Logger().d('Error: $error');
       emit(

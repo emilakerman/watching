@@ -31,7 +31,7 @@ class ShowCubit extends Cubit<ShowCubitState> {
       : _showService = showService,
         super(ShowCubitState()) {
     // TODO(Any): Remove comment to start fetching again.
-    // getAllShows();
+    getAllShows();
   }
 
   Future<void> getAllShows() async {
