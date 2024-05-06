@@ -28,6 +28,25 @@ class SupabaseRepository {
     }
   }
 
+  Future<void> removeShow({
+    required int userId,
+    required int showid,
+  }) async {
+    try {
+      final show = await supabase
+          .from('Shows')
+          .select('shows')
+          .eq('userId', userId)
+          .single();
+
+      show['shows'].removeWhere((element) => element['showid'] == showid);
+      await supabase.from('Shows').update(show).eq('userId', userId);
+      Logger().d('Show removed from Supabase');
+    } catch (error) {
+      Logger().d('Error removing show from supabase: $error');
+    }
+  }
+
   Future<void> addNewShow({
     required int userId,
     required int showid,
