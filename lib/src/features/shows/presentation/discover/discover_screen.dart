@@ -20,6 +20,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
   final searchController = TextEditingController();
 
+  late TabController _tabController;
+
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
@@ -32,8 +34,6 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     super.dispose();
   }
 
-  late TabController _tabController;
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -43,7 +43,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
         ),
       ),
       child: BlocBuilder<ShowCubit, ShowCubitState>(
-        builder: (context, ShowCubitState state) {
+        builder: (blocContext, ShowCubitState state) {
           if (state.isLoading) {
             return const LoadingAnimation();
           } else if (state.isError) {
@@ -58,17 +58,15 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                   SearchWidget(
                     searchController: searchController,
                     searchCallback: () {
-                      setState(
-                        () {
-                          final shows = state.shows;
-                          if (shows.isEmpty) return;
-                          filteredList
-                            ..clear()
-                            ..addAll(
-                              _matchShow(shows).toList(),
-                            );
-                        },
-                      );
+                      setState(() {
+                        final shows = state.shows;
+                        if (shows.isEmpty) return;
+                        filteredList
+                          ..clear()
+                          ..addAll(
+                            _matchShow(shows).toList(),
+                          );
+                      });
                     },
                   ),
                   SearchView(shows: shows),
@@ -79,7 +77,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                 onPressed: () {
                   showModalBottomSheet(
                     context: context,
-                    builder: (BuildContext context) {
+                    builder: (BuildContext context2) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TabBarView(
@@ -97,6 +95,10 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         const Text('Filter by genre'),
+                                        TextButton(
+                                          onPressed: clearFilters,
+                                          child: Text("Clear Filters"),
+                                        ),
                                         TextButton(
                                           onPressed: () =>
                                               _tabController.animateTo(1),
@@ -121,20 +123,18 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                                           (BuildContext context, int index) {
                                         return ElevatedButton(
                                           onPressed: () {
-                                            setState(
-                                              () {
-                                                selectedGenre =
-                                                    genres[index].toString();
-                                                final shows = state.shows;
-                                                if (shows.isEmpty) return;
-                                                filteredList
-                                                  ..clear()
-                                                  ..addAll(
-                                                    _matchShowGenre(shows)
-                                                        .toList(),
-                                                  );
-                                              },
-                                            );
+                                            setState(() {
+                                              selectedGenre =
+                                                  genres[index].toString();
+                                              final shows = state.shows;
+                                              if (shows.isEmpty) return;
+                                              filteredList
+                                                ..clear()
+                                                ..addAll(
+                                                  _matchShowGenre(shows)
+                                                      .toList(),
+                                                );
+                                            });
                                           },
                                           child: Text(
                                             style:
@@ -161,6 +161,10 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                                       children: [
                                         const Text('Filter by language'),
                                         TextButton(
+                                          onPressed: clearFilters,
+                                          child: Text("Clear Filters"),
+                                        ),
+                                        TextButton(
                                           onPressed: () =>
                                               _tabController.animateTo(0),
                                           child: const Text(
@@ -184,20 +188,18 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                                           (BuildContext context, int index) {
                                         return ElevatedButton(
                                           onPressed: () {
-                                            setState(
-                                              () {
-                                                selectedLanguage =
-                                                    languages[index].toString();
-                                                final shows = state.shows;
-                                                if (shows.isEmpty) return;
-                                                filteredList
-                                                  ..clear()
-                                                  ..addAll(
-                                                    _matchShowLanguage(shows)
-                                                        .toList(),
-                                                  );
-                                              },
-                                            );
+                                            setState(() {
+                                              selectedLanguage =
+                                                  languages[index].toString();
+                                              final shows = state.shows;
+                                              if (shows.isEmpty) return;
+                                              filteredList
+                                                ..clear()
+                                                ..addAll(
+                                                  _matchShowLanguage(shows)
+                                                      .toList(),
+                                                );
+                                            });
                                           },
                                           child: Text(
                                             style:
@@ -248,6 +250,15 @@ class _DiscoverScreenState extends State<DiscoverScreen>
         selectedLanguage,
       ),
     );
+  }
+
+  // Method to clear filters
+  void clearFilters() {
+    setState(() {
+      filteredList.clear();
+      selectedGenre = '';
+      selectedLanguage = '';
+    });
   }
 }
 
