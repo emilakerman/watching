@@ -1,8 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:watching/src/features/profile/presentation/mock_favorites.dart';
 import 'package:watching/src/src.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -105,7 +106,7 @@ class FavoritesCard extends StatelessWidget {
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            "${snapshot.data!.length} favorites",
+                            "${snapshot.data?.length ?? 0} favorites",
                             style: textTheme.displayMedium,
                           ),
                           const SizedBox(height: 10),
@@ -149,68 +150,123 @@ class BadgesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return SizedBox(
-      height: 150,
-      width: double.infinity,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Badges",
-                      style: textTheme.displayLarge,
-                    ),
-                    // TODO(Any): Implement navigation to view all badges or bottom sheet.
-                    InkWell(
-                      onTap: () => {},
-                      child: Text(
-                        "View All",
-                        style: textTheme.displayMedium?.copyWith(
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 3),
-                // TODO(Any): Replace with real badges count.
-                Text(
-                  "4 unlocked",
-                  style: textTheme.displayMedium,
-                ),
-                Expanded(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(width: 10),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      // TODO(Any): Replace with real badges.
-                      return CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Text(
-                          index.toString(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+    return BlocProvider(
+      create: (context) => AuthCubit(
+        firebaseAuthRepository: FirebaseAuthRepository(),
+      ),
+      child: BlocBuilder<AuthCubit, AuthCubitState>(
+        builder: (context, state) {
+          final ShowService showService = ShowService(
+            tvMazeRepository: TvMazeRepository(),
+          );
+          final Future<List<Show>> completedShows = showService.getAllCompleted(
+            userId: state.user!.uid.hashCode,
+          );
+          return SizedBox(
+            height: 150,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: FutureBuilder(
+                    future: completedShows,
+                    builder: (context, snapshot) {
+                      final List<int> badges = [];
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const LoadingAnimation();
+                      }
+                      void calculateBadges() {
+                        switch (snapshot.data!.length) {
+                          case >= 1:
+                            badges.add(1);
+                            break;
+                          case >= 10:
+                            badges.add(10);
+                            break;
+                          case >= 50:
+                            badges.add(50);
+                            break;
+                          case >= 100:
+                            badges.add(100);
+                            break;
+                          case >= 200:
+                            badges.add(200);
+                            break;
+                          case >= 500:
+                            badges.add(500);
+                            break;
+                          case >= 1000:
+                            badges.add(1000);
+                            break;
+                          default:
+                            break;
+                        }
+                      }
+
+                      calculateBadges();
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Badges",
+                                style: textTheme.displayLarge,
+                              ),
+                              // TODO(Any): Implement navigation to view all badges or bottom sheet.
+                              InkWell(
+                                onTap: () => {},
+                                child: Text(
+                                  "View All",
+                                  style: textTheme.displayMedium?.copyWith(
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
+                          const SizedBox(height: 3),
+                          // TODO(Any): Replace with real badges count.
+                          Text(
+                            "${badges.length} unlocked",
+                            style: textTheme.displayMedium,
+                          ),
+                          Expanded(
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(width: 10),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: badges.length,
+                              itemBuilder: (context, index) {
+                                // TODO(Any): Replace with real badges.
+                                return CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  child: Text(
+                                    badges[index] != 1000
+                                        ? badges[index].toString()
+                                        : "1k",
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -223,65 +279,113 @@ class RowOfStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15),
-      child: IntrinsicHeight(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // TODO(Any): Replace static numbers with real data.
-            Column(
-              children: [
-                Text(
-                  "3",
-                  textAlign: TextAlign.center,
-                  style: textTheme.displayLarge,
-                ),
-                Text(
-                  "Watching",
-                  textAlign: TextAlign.center,
-                  style: textTheme.displayMedium,
-                ),
-              ],
+    return BlocProvider(
+      create: (context) => AuthCubit(
+        firebaseAuthRepository: FirebaseAuthRepository(),
+      ),
+      child: BlocBuilder<AuthCubit, AuthCubitState>(
+        builder: (context, state) {
+          final ShowService showService = ShowService(
+            tvMazeRepository: TvMazeRepository(),
+          );
+          final Future<List<Show>> completedShows = showService.getAllCompleted(
+            userId: state.user!.uid.hashCode,
+          );
+          final Future<List<Show>> watchingShows = showService.getAllWatching(
+            userId: state.user!.uid.hashCode,
+          );
+          final Future<List<Show>> planToWatchShows =
+              showService.getAllPlanToWatch(
+            userId: state.user!.uid.hashCode,
+          );
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 15),
+            child: IntrinsicHeight(
+              child: FutureBuilder(
+                future: completedShows,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const LoadingAnimation();
+                  }
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // TODO(Any): Replace static numbers with real data, completed is done already.
+                      Column(
+                        children: [
+                          FutureBuilder(
+                            future: watchingShows,
+                            builder: (context, watchingShows) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const LoadingAnimation();
+                              }
+                              return Text(
+                                watchingShows.data?.length.toString() ?? "0",
+                                textAlign: TextAlign.center,
+                                style: textTheme.displayLarge,
+                              );
+                            },
+                          ),
+                          Text(
+                            "Watching",
+                            textAlign: TextAlign.center,
+                            style: textTheme.displayMedium,
+                          ),
+                        ],
+                      ),
+                      VerticalDivider(
+                        color: Colors.grey.withOpacity(0.5),
+                        thickness: 2,
+                      ),
+                      Column(
+                        children: [
+                          FutureBuilder(
+                            future: planToWatchShows,
+                            builder: (context, planToWatchShows) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const LoadingAnimation();
+                              }
+                              return Text(
+                                planToWatchShows.data?.length.toString() ?? "",
+                                textAlign: TextAlign.center,
+                                style: textTheme.displayLarge,
+                              );
+                            },
+                          ),
+                          Text(
+                            "Plan To Watch",
+                            textAlign: TextAlign.center,
+                            style: textTheme.displayMedium,
+                          ),
+                        ],
+                      ),
+                      VerticalDivider(
+                        color: Colors.grey.withOpacity(0.5),
+                        thickness: 2,
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            snapshot.data?.length.toString() ?? "",
+                            textAlign: TextAlign.center,
+                            style: textTheme.displayLarge,
+                          ),
+                          Text(
+                            "Completed",
+                            textAlign: TextAlign.center,
+                            style: textTheme.displayMedium,
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
-            VerticalDivider(
-              color: Colors.grey.withOpacity(0.5),
-              thickness: 2,
-            ),
-            Column(
-              children: [
-                Text(
-                  "14",
-                  textAlign: TextAlign.center,
-                  style: textTheme.displayLarge,
-                ),
-                Text(
-                  "Plan To Watch",
-                  textAlign: TextAlign.center,
-                  style: textTheme.displayMedium,
-                ),
-              ],
-            ),
-            VerticalDivider(
-              color: Colors.grey.withOpacity(0.5),
-              thickness: 2,
-            ),
-            Column(
-              children: [
-                Text(
-                  "78",
-                  textAlign: TextAlign.center,
-                  style: textTheme.displayLarge,
-                ),
-                Text(
-                  "Completed",
-                  textAlign: TextAlign.center,
-                  style: textTheme.displayMedium,
-                ),
-              ],
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
