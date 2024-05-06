@@ -6,6 +6,22 @@ class SupabaseServices {
     required SupabaseRepository supabaseRepository,
   }) : _supabaseRepository = supabaseRepository;
 
+  Future<void> addNewShow({
+    required int userId,
+    required int showid,
+    required String showStatus,
+  }) async {
+    try {
+      await _supabaseRepository.addNewShow(
+        userId: userId,
+        showid: showid,
+        showStatus: showStatus,
+      );
+    } catch (error) {
+      Logger().d('Error adding new show: $error');
+    }
+  }
+
   Future<List<int>> getAllFavorites({required int userId}) async {
     final List<int> favoriteShows = [];
     final jsonResponse =

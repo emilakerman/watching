@@ -259,6 +259,14 @@ class SearchView extends StatelessWidget {
   final List<Show> shows;
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuthRepository firebaseAuthRepository =
+        FirebaseAuthRepository();
+    final userId = firebaseAuthRepository.getUser()?.uid.hashCode;
+    if (userId == null) {
+      return const Center(
+        child: Text('User not found'),
+      );
+    }
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Expanded(
       child: ListView.builder(
@@ -316,7 +324,15 @@ class SearchView extends StatelessWidget {
                         Column(
                           children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => WatchingAlert(
+                                    showid: show.id,
+                                    userId: userId,
+                                  ),
+                                );
+                              },
                               icon: const Icon(Icons.add),
                             ),
                             IconButton(
