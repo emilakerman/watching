@@ -57,16 +57,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                 children: [
                   SearchWidget(
                     searchController: searchController,
-                    searchCallback: () {
-                      setState(() {
-                        final shows = state.shows;
-                        if (shows.isEmpty) return;
-                        filteredList
-                          ..clear()
-                          ..addAll(
-                            _matchShow(shows).toList(),
-                          );
-                      });
+                    resetSearch: () {
+                      blocContext.read<ShowCubit>().getAllShows();
                     },
                   ),
                   SearchView(shows: shows),
@@ -327,7 +319,10 @@ class SearchView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         CachedNetworkImage(
-                          imageUrl: show.image?.medium ?? '',
+                          imageUrl: show.image?.medium ??
+                              'https://i.imgur.com/U0xPF44.jpeg',
+                          width: 90,
+                          height: 120,
                           progressIndicatorBuilder: (context, url, progress) {
                             return const LoadingAnimation();
                           },

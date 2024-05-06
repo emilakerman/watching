@@ -28,4 +28,20 @@ class Show with _$Show {
   }) = _Show;
 
   factory Show.fromJson(Map<String, Object?> json) => _$ShowFromJson(json);
+
+  factory Show.fromJsonSearch(Map<String, dynamic> json) {
+    return Show(
+      id: json['show']['id'] as int,
+      name: json['show']['name'] as String,
+      type: json['show']['type'] as String,
+      language: json['show']['language'] as String,
+      genres: (json['show']['genres'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      summary: json['show']['summary'] as String,
+      image: json['show']['image'] != null
+          ? Image.fromJson(json['show']['image'] as Map<String, dynamic>)
+          : null,
+    );
+  }
 }

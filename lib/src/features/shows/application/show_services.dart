@@ -13,6 +13,16 @@ class ShowService {
     return shows;
   }
 
+  // Search directly in the api.
+  Future<List<Show>> getShowByName({required String showName}) async {
+    final jsonResponse =
+        await _tvMazeRepository.getShowByName(showName: showName);
+    final shows = (jsonResponse as List)
+        .map((show) => Show.fromJsonSearch(show as Map<String, dynamic>))
+        .toList();
+    return shows;
+  }
+
   Future<List<Show>> getFavoritesByUserId({required int userId}) async {
     final SupabaseServices supabaseServices = SupabaseServices(
       supabaseRepository: SupabaseRepository(),

@@ -11,19 +11,18 @@ class TvMazeRepository {
   final FirebaseAuthRepository _firebaseAuthRepository =
       FirebaseAuthRepository();
 
-  Future<String> getShowByName({required String showName}) async {
+  Future<dynamic> getShowByName({required String showName}) async {
     if (!_firebaseAuthRepository.isAuthenticated()) {
       Logger().d('User is not authenticated');
       return '';
     }
-    final String url = '${_client}singlesearch/shows?q=$showName';
+    final String url = '${_client}search/shows?q=$showName';
     final Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      final String show = response.body;
-      return show;
+      return json.decode(response.body);
     } else {
-      Logger().d('Failed to fetch shows by genre');
-      throw Exception('Failed to fetch shows by genre');
+      Logger().d('Failed to fetch shows by name');
+      throw Exception('Failed to fetch shows by name');
     }
   }
 
