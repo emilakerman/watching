@@ -28,6 +28,43 @@ class SupabaseRepository {
     }
   }
 
+  Future<void> addNewShow({
+    required int userId,
+    required int showid,
+    required String showStatus,
+  }) async {
+    bool showExists = false;
+    try {
+      final show = await supabase
+          .from('Shows')
+          .select('shows')
+          .eq('userId', userId)
+          .single();
+
+      show['shows'].asMap().forEach((index, value) {
+        if (value['showid'] == showid) {
+          showExists = true;
+        }
+      });
+
+      if (!showExists) {
+        show['shows'].add({
+          'showid': showid,
+          'status': showStatus,
+          'favorite': false,
+        });
+      } else {
+        Logger().d('Show already exists in Supabase');
+        return;
+      }
+
+      await supabase.from('Shows').update(show).eq('userId', userId);
+      Logger().d('New show added to Supabase');
+    } catch (error) {
+      Logger().d('Error adding new show to Supabase: $error');
+    }
+  }
+
   Future<void> updateStatusOfShow({
     required int userId,
     required int showid,
