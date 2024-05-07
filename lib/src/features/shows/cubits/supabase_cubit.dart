@@ -16,6 +16,7 @@ class SupabaseCubitState with _$SupabaseCubitState {
   }) = _SupabaseCubitState;
 
   const SupabaseCubitState._();
+  bool get isInitial => status == SupabaseCubitStatus.initial;
   bool get isLoading => status == SupabaseCubitStatus.loading;
   bool get isError => status == SupabaseCubitStatus.error;
   bool get isSuccess => status == SupabaseCubitStatus.success;
@@ -33,7 +34,6 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
 
   Future<void> getAllWatching() async {
     final userId = _authRepository.getUser()!.uid.hashCode;
-
     try {
       emit(state.copyWith(status: SupabaseCubitStatus.loading));
       final List<Show> fetchedShows = await _showService.getAllWatching(
@@ -131,6 +131,10 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
         ),
       );
     }
+  }
+
+  Future<void> resetToInitialState() async {
+    emit(state.copyWith(status: SupabaseCubitStatus.initial));
   }
 
   Future<void> addNewShow({

@@ -16,11 +16,37 @@ class WatchingAlert extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme;
+    context.read<SupabaseCubit>().resetToInitialState();
     return AlertDialog(
       content: BlocBuilder<SupabaseCubit, SupabaseCubitState>(
         builder: (context, state) {
-          if (state.isLoading) {
-            Navigator.of(context).pop();
+          if (state.isLoading)
+            return const SizedBox(height: 100, child: LoadingAnimation());
+          if (state.isSuccess) {
+            Future.delayed(const Duration(milliseconds: 200), () {
+              Navigator.of(context).pop();
+            });
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Icon(
+                        Icons.check_circle_outline_outlined,
+                        color: Colors.grey.withOpacity(0.3),
+                        size: 100,
+                      ),
+                      Text(
+                        'Added!',
+                        style: textStyle.titleLarge,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
           }
           return Column(
             mainAxisSize: MainAxisSize.min,
