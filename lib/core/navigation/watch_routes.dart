@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/src.dart';
@@ -28,8 +26,12 @@ final watchingRoutes = [
                             context.goNamed(WatchingRoutesNames.profile),
                         child: const CircleAvatar(
                           radius: 15,
-                          backgroundImage: AssetImage(
-                            'assets/images/default_avatar.png',
+                          child: Center(
+                            child: Icon(
+                              Icons.person,
+                              size: 20,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -89,6 +91,8 @@ final _discoverRoute = GoRoute(
   routes: [
     _profileRoute,
     _watchingRoute,
+    _completedRoute,
+    _planToWatchRoute,
   ],
 );
 
@@ -111,6 +115,30 @@ final _watchingRoute = GoRoute(
   builder: (context, state) {
     return const WatchingScreen(
       key: Key(WatchingRoutesNames.watching),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Completed Screen route
+final _completedRoute = GoRoute(
+  path: WatchingRoutesNames.completed,
+  name: WatchingRoutesNames.completed,
+  builder: (context, state) {
+    return const CompletedScreen(
+      key: Key(WatchingRoutesNames.completed),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Plan To Watch Screen route
+final _planToWatchRoute = GoRoute(
+  path: WatchingRoutesNames.planToWatch,
+  name: WatchingRoutesNames.planToWatch,
+  builder: (context, state) {
+    return const PlanToWatchScreen(
+      key: Key(WatchingRoutesNames.planToWatch),
     );
   },
   routes: const [],

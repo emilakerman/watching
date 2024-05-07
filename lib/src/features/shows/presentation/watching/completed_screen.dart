@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watching/src/src.dart';
 
-class WatchingScreen extends StatelessWidget {
-  const WatchingScreen({super.key});
+class CompletedScreen extends StatelessWidget {
+  const CompletedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class WatchingScreen extends StatelessWidget {
           final ShowService showService = ShowService(
             tvMazeRepository: TvMazeRepository(),
           );
-          final Future<List<Show>> watchingShows = showService.getAllWatching(
+          final Future<List<Show>> completedShows = showService.getAllCompleted(
             userId: state.user!.uid.hashCode,
           );
           return Scaffold(
@@ -24,9 +25,9 @@ class WatchingScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FutureBuilder(
-                  future: watchingShows,
-                  builder: (context, watchingShows) {
-                    if (watchingShows.connectionState ==
+                  future: completedShows,
+                  builder: (context, completedShows) {
+                    if (completedShows.connectionState ==
                         ConnectionState.waiting) {
                       return const LoadingAnimation();
                     }
@@ -41,7 +42,7 @@ class WatchingScreen extends StatelessWidget {
                                 width: double.infinity,
                                 child: Center(
                                   child: Text(
-                                    "You are watching ${watchingShows.data?.length} shows!",
+                                    "You have completed ${completedShows.data?.length} shows!",
                                     style: Theme.of(context)
                                         .textTheme
                                         .displayLarge,
@@ -51,7 +52,7 @@ class WatchingScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SearchView(shows: watchingShows.data as List<Show>),
+                          SearchView(shows: completedShows.data as List<Show>),
                         ],
                       ),
                     );
