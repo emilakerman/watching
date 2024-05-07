@@ -30,9 +30,6 @@ class WatchingAlert extends StatelessWidget {
               );
             }
             if (state.isSuccess) {
-              // Future.delayed(Duration(seconds: 2), () {
-              //   Navigator.of(context).pop();
-              // });
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -57,8 +54,10 @@ class WatchingAlert extends StatelessWidget {
             }
             return Column(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text("Select show status:", style: textStyle.titleLarge),
+                const SizedBox(height: 15),
                 ElevatedButton(
                   onPressed: () {
                     context.read<SupabaseCubit>().addNewShow(

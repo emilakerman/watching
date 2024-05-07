@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watching/core/navigation/watch_route_names.dart';
 import 'package:watching/src/features/shows/presentation/discover/genres.dart';
 import 'package:watching/src/features/shows/presentation/discover/languages.dart';
 import 'package:watching/src/src.dart';
@@ -271,92 +273,113 @@ class SearchView extends StatelessWidget {
       );
     }
     final TextTheme textTheme = Theme.of(context).textTheme;
-    return Expanded(
-      child: ListView.builder(
-        itemCount: shows.length,
-        itemBuilder: (context, index) {
-          if (index >= shows.length) return null;
-          final Show show = shows[index];
-          return SizedBox(
-            height: 120,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              color: const Color(0xff1b1b29),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 10,
-                        top: 10,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            show.name,
-                            style: textTheme.displayLarge,
-                          ),
-                          Text(
-                            show.language,
-                            style: textTheme.displayMedium?.copyWith(
-                              color: Colors.grey,
+    return BlocProvider(
+      create: (context) => SupabaseCubit(
+        supabaseServices: SupabaseServices(
+          supabaseRepository: SupabaseRepository(),
+        ),
+      ),
+      child: Expanded(
+        child: ListView.builder(
+          itemCount: shows.length,
+          itemBuilder: (context, index) {
+            if (index >= shows.length) return null;
+            final Show show = shows[index];
+            return SizedBox(
+              height: 120,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                color: const Color(0xff1b1b29),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 10,
+                          top: 10,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              show.name,
+                              style: textTheme.displayLarge,
                             ),
+                            Text(
+                              show.language,
+                              style: textTheme.displayMedium?.copyWith(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            Text(
+                              show.genres.join(', '),
+                              style: textTheme.displayMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          CachedNetworkImage(
+                            imageUrl: show.image?.medium ??
+                                'https://i.imgur.com/U0xPF44.jpeg',
+                            width: 90,
+                            height: 120,
+                            progressIndicatorBuilder: (context, url, progress) {
+                              return const LoadingAnimation();
+                            },
                           ),
-                          Text(
-                            show.genres.join(', '),
-                            style: textTheme.displayMedium,
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => WatchingAlert(
+                                      showid: show.id,
+                                      userId: userId,
+                                    ),
+                                  );
+                                },
+                                icon: const Icon(Icons.add),
+                              ),
+                              BlocBuilder<SupabaseCubit, SupabaseCubitState>(
+                                builder: (blocContext, state) {
+                                  final currentRoute =
+                                      GoRouterState.of(context).uri.toString();
+                                  return currentRoute != '/discover'
+                                      ? IconButton(
+                                          onPressed: () {
+                                            blocContext
+                                                .read<SupabaseCubit>()
+                                                .removeShow(
+                                                  userId: userId,
+                                                  showid: show.id,
+                                                );
+                                          },
+                                          icon: const Icon(Icons.delete),
+                                        )
+                                      : const SizedBox.shrink();
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: show.image?.medium ??
-                              'https://i.imgur.com/U0xPF44.jpeg',
-                          width: 90,
-                          height: 120,
-                          progressIndicatorBuilder: (context, url, progress) {
-                            return const LoadingAnimation();
-                          },
-                        ),
-                        Column(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (_) => WatchingAlert(
-                                    showid: show.id,
-                                    userId: userId,
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.add),
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.menu_open,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

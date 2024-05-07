@@ -74,7 +74,18 @@ class SupabaseRepository {
         });
       } else {
         Logger().d('Show already exists in Supabase');
-        return;
+        if (show['status'] == showStatus) {
+          Logger().d('Not proceeding with publishing or updating.');
+          return;
+        } else if (show['status'] != showStatus) {
+          await updateStatusOfShow(
+            userId: userId,
+            showid: showid,
+            showStatus: showStatus,
+          );
+          Logger().d('Show status updated in Supabase to $showStatus.');
+          return;
+        }
       }
 
       await supabase.from('Shows').update(show).eq('userId', userId);

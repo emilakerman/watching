@@ -27,6 +27,33 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
       : _supabaseServices = supabaseServices,
         super(SupabaseCubitState());
 
+  Future<void> removeShow({
+    required int userId,
+    required int showid,
+  }) async {
+    try {
+      emit(state.copyWith(status: SupabaseCubitStatus.loading));
+      await _supabaseServices.removeShow(
+        userId: userId,
+        showid: showid,
+      );
+      emit(
+        state.copyWith(
+          status: SupabaseCubitStatus.success,
+        ),
+      );
+      Logger().d("Show removed from Supabase");
+    } catch (error) {
+      Logger().d(error.toString());
+      emit(
+        state.copyWith(
+          status: SupabaseCubitStatus.error,
+          errorMessage: error.toString(),
+        ),
+      );
+    }
+  }
+
   Future<void> addNewShow({
     required int userId,
     required int showid,
