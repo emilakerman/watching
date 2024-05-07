@@ -11,6 +11,15 @@ class WatchingRoutesNames {
 
   /// Route is: profile
   static const profile = 'profile';
+
+  /// Route is: watching
+  static const watching = 'watching';
+
+  /// Route is: completed
+  static const completed = 'completed';
+
+  /// Route is: plan-to-watch
+  static const planToWatch = 'planToWatch';
 }
 
 extension RoutesX on String {

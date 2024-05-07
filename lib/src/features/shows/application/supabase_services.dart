@@ -86,5 +86,13 @@ class SupabaseServices {
     return planToWatchShows;
   }
 
+  Future<void> removeShow({required int userId, required int showid}) async {
+    try {
+      await _supabaseRepository.removeShow(userId: userId, showid: showid);
+    } catch (error) {
+      Logger().d('Error removing show: $error');
+    }
+  }
+
   final SupabaseRepository _supabaseRepository;
 }

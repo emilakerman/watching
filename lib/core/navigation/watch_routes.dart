@@ -18,12 +18,6 @@ final watchingRoutes = [
           appBar: !isOnProfilePage
               ? AppBar(
                   title: const Text('Watching'),
-                  leading: IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      scaffoldKey.currentState!.openDrawer();
-                    },
-                  ),
                   actions: [
                     Padding(
                       padding: const EdgeInsets.only(right: 15.0),
@@ -32,8 +26,12 @@ final watchingRoutes = [
                             context.goNamed(WatchingRoutesNames.profile),
                         child: const CircleAvatar(
                           radius: 15,
-                          backgroundImage: AssetImage(
-                            'assets/images/default_avatar.png',
+                          child: Center(
+                            child: Icon(
+                              Icons.person,
+                              size: 20,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
@@ -42,6 +40,9 @@ final watchingRoutes = [
                 )
               : null,
           body: child,
+          drawer: const Drawer(
+            child: HamburgerMenu(),
+          ),
         );
       }
     },
@@ -89,6 +90,9 @@ final _discoverRoute = GoRoute(
   },
   routes: [
     _profileRoute,
+    _watchingRoute,
+    _completedRoute,
+    _planToWatchRoute,
   ],
 );
 
@@ -99,6 +103,42 @@ final _profileRoute = GoRoute(
   builder: (context, state) {
     return const ProfileScreen(
       key: Key(WatchingRoutesNames.profile),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Watching Screen route
+final _watchingRoute = GoRoute(
+  path: WatchingRoutesNames.watching,
+  name: WatchingRoutesNames.watching,
+  builder: (context, state) {
+    return const WatchingScreen(
+      key: Key(WatchingRoutesNames.watching),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Completed Screen route
+final _completedRoute = GoRoute(
+  path: WatchingRoutesNames.completed,
+  name: WatchingRoutesNames.completed,
+  builder: (context, state) {
+    return const CompletedScreen(
+      key: Key(WatchingRoutesNames.completed),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Plan To Watch Screen route
+final _planToWatchRoute = GoRoute(
+  path: WatchingRoutesNames.planToWatch,
+  name: WatchingRoutesNames.planToWatch,
+  builder: (context, state) {
+    return const PlanToWatchScreen(
+      key: Key(WatchingRoutesNames.planToWatch),
     );
   },
   routes: const [],
