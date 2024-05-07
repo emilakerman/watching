@@ -13,7 +13,7 @@ class SearchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(top: 10.0, bottom: 7),
       child: SearchBar(
         controller: searchController,
         trailing: [

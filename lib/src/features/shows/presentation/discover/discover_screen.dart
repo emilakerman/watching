@@ -38,187 +38,177 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ShowCubit(
-        showService: ShowService(
-          tvMazeRepository: TvMazeRepository(),
-        ),
-      ),
-      child: BlocBuilder<ShowCubit, ShowCubitState>(
-        builder: (blocContext, ShowCubitState state) {
-          if (state.isLoading) {
-            return const LoadingAnimation();
-          } else if (state.isError) {
-            return const Center(
-              child: Text('Error fetching shows'),
-            );
-          } else {
-            final shows = filteredList.isNotEmpty ? filteredList : state.shows;
-            return Scaffold(
-              body: Column(
-                children: [
-                  SearchWidget(
-                    searchController: searchController,
-                    resetSearch: () {
-                      blocContext.read<ShowCubit>().getAllShows();
-                    },
-                  ),
-                  SearchView(shows: shows),
-                ],
-              ),
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.grey[800],
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context2) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: [
-                            Tab(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text('Filter by genre'),
-                                        TextButton(
-                                          onPressed: clearFilters,
-                                          child: Text("Clear Filters"),
-                                        ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              _tabController.animateTo(1),
-                                          child: const Text(
-                                            "Languages",
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+    return BlocBuilder<ShowCubit, ShowCubitState>(
+      builder: (context, ShowCubitState state) {
+        if (state.isLoading) {
+          return const LoadingAnimation();
+        } else if (state.isError) {
+          return const Center(
+            child: Text('Error fetching shows'),
+          );
+        } else {
+          final shows = filteredList.isNotEmpty ? filteredList : state.shows;
+          return Scaffold(
+            body: Column(
+              children: [
+                SearchWidget(
+                  searchController: searchController,
+                  resetSearch: () {
+                    context.read<ShowCubit>().getAllShows();
+                  },
+                ),
+                SearchView(shows: shows),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.grey[800],
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          Tab(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
                                   ),
-                                  Expanded(
-                                    child: GridView.builder(
-                                      gridDelegate:
-                                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 160,
-                                        childAspectRatio: 3 / 2,
-                                        crossAxisSpacing: 0,
-                                        mainAxisSpacing: 5,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Filter by genre'),
+                                      TextButton(
+                                        onPressed: clearFilters,
+                                        child: Text("Clear Filters"),
                                       ),
-                                      itemCount: genres.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              selectedGenre =
-                                                  genres[index].toString();
-                                              final shows = state.shows;
-                                              if (shows.isEmpty) return;
-                                              filteredList
-                                                ..clear()
-                                                ..addAll(
-                                                  _matchShowGenre(shows)
-                                                      .toList(),
-                                                );
-                                            });
-                                          },
-                                          child: Text(
-                                            style:
-                                                const TextStyle(fontSize: 12),
-                                            genres[index].toString(),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Tab(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text('Filter by language'),
-                                        TextButton(
-                                          onPressed: clearFilters,
-                                          child: Text("Clear Filters"),
+                                      TextButton(
+                                        onPressed: () =>
+                                            _tabController.animateTo(1),
+                                        child: const Text(
+                                          "Languages",
                                         ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              _tabController.animateTo(0),
-                                          child: const Text(
-                                            "Genres",
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: GridView.builder(
-                                      gridDelegate:
-                                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 160,
-                                        childAspectRatio: 3 / 2,
-                                        crossAxisSpacing: 0,
-                                        mainAxisSpacing: 5,
                                       ),
-                                      itemCount: languages.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              selectedLanguage =
-                                                  languages[index].toString();
-                                              final shows = state.shows;
-                                              if (shows.isEmpty) return;
-                                              filteredList
-                                                ..clear()
-                                                ..addAll(
-                                                  _matchShowLanguage(shows)
-                                                      .toList(),
-                                                );
-                                            });
-                                          },
-                                          child: Text(
-                                            style:
-                                                const TextStyle(fontSize: 12),
-                                            languages[index].toString(),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                                Expanded(
+                                  child: GridView.builder(
+                                    gridDelegate:
+                                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 160,
+                                      childAspectRatio: 3 / 2,
+                                      crossAxisSpacing: 0,
+                                      mainAxisSpacing: 5,
+                                    ),
+                                    itemCount: genres.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            selectedGenre =
+                                                genres[index].toString();
+                                            final shows = state.shows;
+                                            if (shows.isEmpty) return;
+                                            filteredList
+                                              ..clear()
+                                              ..addAll(
+                                                _matchShowGenre(shows).toList(),
+                                              );
+                                          });
+                                        },
+                                        child: Text(
+                                          style: const TextStyle(fontSize: 12),
+                                          genres[index].toString(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: const Icon(Icons.filter_list),
-              ),
-            );
-          }
-        },
-      ),
+                          ),
+                          Tab(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Filter by language'),
+                                      TextButton(
+                                        onPressed: clearFilters,
+                                        child: Text("Clear Filters"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () =>
+                                            _tabController.animateTo(0),
+                                        child: const Text(
+                                          "Genres",
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GridView.builder(
+                                    gridDelegate:
+                                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 160,
+                                      childAspectRatio: 3 / 2,
+                                      crossAxisSpacing: 0,
+                                      mainAxisSpacing: 5,
+                                    ),
+                                    itemCount: languages.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            selectedLanguage =
+                                                languages[index].toString();
+                                            final shows = state.shows;
+                                            if (shows.isEmpty) return;
+                                            filteredList
+                                              ..clear()
+                                              ..addAll(
+                                                _matchShowLanguage(shows)
+                                                    .toList(),
+                                              );
+                                          });
+                                        },
+                                        child: Text(
+                                          style: const TextStyle(fontSize: 12),
+                                          languages[index].toString(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: const Icon(Icons.filter_list),
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -264,6 +254,7 @@ class SearchView extends StatelessWidget {
   final List<Show> shows;
   @override
   Widget build(BuildContext context) {
+    final currentRoute = GoRouterState.of(context).uri.toString();
     final FirebaseAuthRepository firebaseAuthRepository =
         FirebaseAuthRepository();
     final userId = firebaseAuthRepository.getUser()?.uid.hashCode;
@@ -273,113 +264,99 @@ class SearchView extends StatelessWidget {
       );
     }
     final TextTheme textTheme = Theme.of(context).textTheme;
-    return BlocProvider(
-      create: (context) => SupabaseCubit(
-        supabaseServices: SupabaseServices(
-          supabaseRepository: SupabaseRepository(),
-        ),
-      ),
-      child: Expanded(
-        child: ListView.builder(
-          itemCount: shows.length,
-          itemBuilder: (context, index) {
-            if (index >= shows.length) return null;
-            final Show show = shows[index];
-            return SizedBox(
-              height: 120,
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                color: const Color(0xff1b1b29),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 10,
-                          top: 10,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              show.name,
-                              style: textTheme.displayLarge,
-                            ),
-                            Text(
-                              show.language,
-                              style: textTheme.displayMedium?.copyWith(
-                                color: Colors.grey,
-                              ),
-                            ),
-                            Text(
-                              show.genres.join(', '),
-                              style: textTheme.displayMedium,
-                            ),
-                          ],
-                        ),
+    return Expanded(
+      child: ListView.builder(
+        itemCount: shows.length,
+        itemBuilder: (context, index) {
+          if (index >= shows.length) return null;
+          final Show show = shows[index];
+          return SizedBox(
+            height: 120,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              color: const Color(0xff1b1b29),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        top: 10,
                       ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CachedNetworkImage(
-                            imageUrl: show.image?.medium ??
-                                'https://i.imgur.com/U0xPF44.jpeg',
-                            width: 90,
-                            height: 120,
-                            progressIndicatorBuilder: (context, url, progress) {
-                              return const LoadingAnimation();
-                            },
+                          Text(
+                            show.name,
+                            style: textTheme.displayLarge,
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => WatchingAlert(
-                                      showid: show.id,
-                                      userId: userId,
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(Icons.add),
-                              ),
-                              BlocBuilder<SupabaseCubit, SupabaseCubitState>(
-                                builder: (blocContext, state) {
-                                  final currentRoute =
-                                      GoRouterState.of(context).uri.toString();
-                                  return currentRoute != '/discover'
-                                      ? IconButton(
-                                          onPressed: () {
-                                            blocContext
-                                                .read<SupabaseCubit>()
-                                                .removeShow(
-                                                  userId: userId,
-                                                  showid: show.id,
-                                                );
-                                          },
-                                          icon: const Icon(Icons.delete),
-                                        )
-                                      : const SizedBox.shrink();
-                                },
-                              ),
-                            ],
+                          Text(
+                            show.language,
+                            style: textTheme.displayMedium?.copyWith(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          Text(
+                            show.genres.join(', '),
+                            style: textTheme.displayMedium,
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CachedNetworkImage(
+                          imageUrl: show.image?.medium ??
+                              'https://i.imgur.com/U0xPF44.jpeg',
+                          width: 90,
+                          height: 120,
+                          progressIndicatorBuilder: (context, url, progress) {
+                            return const LoadingAnimation();
+                          },
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => WatchingAlert(
+                                    show: show,
+                                    showid: show.id,
+                                    userId: userId,
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.add),
+                            ),
+                            currentRoute != '/discover'
+                                ? IconButton(
+                                    onPressed: () {
+                                      context.read<SupabaseCubit>().removeShow(
+                                            userId: userId,
+                                            showid: show.id,
+                                          );
+                                    },
+                                    icon: const Icon(Icons.delete),
+                                  )
+                                : const SizedBox.shrink(),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

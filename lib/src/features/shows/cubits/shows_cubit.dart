@@ -2,11 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:watching/core/core.dart';
+import 'package:watching/src/features/authentication/authentication.dart';
 import 'package:watching/src/features/shows/shows.dart';
 import 'package:watching/utils/date_extension.dart';
-
-import '../../../../core/core.dart';
 
 part 'shows_cubit.freezed.dart';
 
@@ -34,7 +33,6 @@ class ShowCubit extends Cubit<ShowCubitState> {
   ShowCubit({required ShowService showService})
       : _showService = showService,
         super(ShowCubitState()) {
-    // TODO(Any): Remove comment to start fetching again.
     getAllShows();
   }
 

@@ -7,60 +7,40 @@ class PlanToWatchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthCubit(
-        firebaseAuthRepository: FirebaseAuthRepository(),
-      ),
-      child: BlocBuilder<AuthCubit, AuthCubitState>(
+    context.read<SupabaseCubit>().getAllPlanToWatch();
+    return Scaffold(
+      body: BlocBuilder<SupabaseCubit, SupabaseCubitState>(
         builder: (context, state) {
-          final ShowService showService = ShowService(
-            tvMazeRepository: TvMazeRepository(),
-          );
-          final Future<List<Show>> planToWatchShows =
-              showService.getAllPlanToWatch(
-            userId: state.user!.uid.hashCode,
-          );
-          return Scaffold(
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FutureBuilder(
-                  future: planToWatchShows,
-                  builder: (context, planToWatchShows) {
-                    if (planToWatchShows.connectionState ==
-                        ConnectionState.waiting) {
-                      return const LoadingAnimation();
-                    }
-                    return Expanded(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Card(
-                              child: SizedBox(
-                                height: 50,
-                                width: double.infinity,
-                                child: Center(
-                                  child: Text(
-                                    "You plan to watch ${planToWatchShows.data?.length} shows!",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
+          if (state.isLoading) {
+            return const LoadingAnimation();
+          }
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Card(
+                        child: SizedBox(
+                          height: 50,
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              "You plan to watch ${state.show.length} ${state.show.length != 1 ? 'shows' : 'show'}!",
+                              style: Theme.of(context).textTheme.displayLarge,
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                          SearchView(
-                              shows: planToWatchShows.data as List<Show>),
-                        ],
+                        ),
                       ),
-                    );
-                  },
+                    ),
+                    SearchView(shows: state.show),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         },
       ),
