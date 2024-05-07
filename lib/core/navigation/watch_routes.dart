@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/src.dart';
@@ -18,12 +20,6 @@ final watchingRoutes = [
           appBar: !isOnProfilePage
               ? AppBar(
                   title: const Text('Watching'),
-                  leading: IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () {
-                      scaffoldKey.currentState!.openDrawer();
-                    },
-                  ),
                   actions: [
                     Padding(
                       padding: const EdgeInsets.only(right: 15.0),
@@ -42,6 +38,9 @@ final watchingRoutes = [
                 )
               : null,
           body: child,
+          drawer: const Drawer(
+            child: HamburgerMenu(),
+          ),
         );
       }
     },
@@ -89,6 +88,7 @@ final _discoverRoute = GoRoute(
   },
   routes: [
     _profileRoute,
+    _watchingRoute,
   ],
 );
 
@@ -99,6 +99,18 @@ final _profileRoute = GoRoute(
   builder: (context, state) {
     return const ProfileScreen(
       key: Key(WatchingRoutesNames.profile),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Watching Screen route
+final _watchingRoute = GoRoute(
+  path: WatchingRoutesNames.watching,
+  name: WatchingRoutesNames.watching,
+  builder: (context, state) {
+    return const WatchingScreen(
+      key: Key(WatchingRoutesNames.watching),
     );
   },
   routes: const [],
