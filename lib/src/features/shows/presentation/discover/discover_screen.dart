@@ -326,6 +326,7 @@ class SearchView extends StatelessWidget {
                             IconButton(
                               onPressed: () {
                                 showDialog(
+                                  barrierDismissible: false,
                                   context: context,
                                   builder: (context) => WatchingAlert(
                                     show: show,

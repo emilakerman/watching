@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watching/src/src.dart';
@@ -51,6 +52,7 @@ class WatchingAlert extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text("Select show status:", style: textStyle.titleLarge),
+              const SizedBox(),
               const SizedBox(height: 15),
               ElevatedButton(
                 onPressed: () {
@@ -84,6 +86,10 @@ class WatchingAlert extends StatelessWidget {
                       );
                 },
                 child: const Text("Completed"),
+              ),
+              CupertinoButton(
+                onPressed: Navigator.of(context).pop,
+                child: const Text('Close Dialog'),
               ),
             ],
           );
