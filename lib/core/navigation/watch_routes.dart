@@ -10,6 +10,7 @@ final watchingRoutes = [
     builder: (context, state, child) {
       final isOnLoginPage = state.fullPath == WatchingRoutesNames.root.path;
       final isOnProfilePage = state.fullPath == '/discover/profile';
+      final isOnSettingsPage = state.fullPath == '/discover/profile/settings';
       if (isOnLoginPage) {
         return child;
       } else {
@@ -18,6 +19,11 @@ final watchingRoutes = [
           appBar: !isOnProfilePage
               ? AppBar(
                   title: const Text('Watching'),
+                  leading: isOnSettingsPage
+                      ? BackButton(
+                          onPressed: context.pop,
+                        )
+                      : null,
                   actions: [
                     Padding(
                       padding: const EdgeInsets.only(right: 15.0),
@@ -40,9 +46,11 @@ final watchingRoutes = [
                 )
               : null,
           body: child,
-          drawer: const Drawer(
-            child: HamburgerMenu(),
-          ),
+          drawer: !isOnSettingsPage
+              ? const Drawer(
+                  child: HamburgerMenu(),
+                )
+              : null,
         );
       }
     },
@@ -106,7 +114,9 @@ final _profileRoute = GoRoute(
       key: Key(WatchingRoutesNames.profile),
     );
   },
-  routes: const [],
+  routes: [
+    _settingsRoute,
+  ],
 );
 
 /// --- Watching Screen route
@@ -152,6 +162,18 @@ final _featuredRoute = GoRoute(
   builder: (context, state) {
     return const FeaturedScreen(
       key: Key(WatchingRoutesNames.featured),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Settings Screen route
+final _settingsRoute = GoRoute(
+  path: WatchingRoutesNames.settings,
+  name: WatchingRoutesNames.settings,
+  builder: (context, state) {
+    return const SettingsScreen(
+      key: Key(WatchingRoutesNames.settings),
     );
   },
   routes: const [],
