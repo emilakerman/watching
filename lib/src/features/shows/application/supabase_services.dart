@@ -38,6 +38,19 @@ class SupabaseServices {
     return favoriteShows;
   }
 
+  Future<List<int>> getAllFeaturedShows() async {
+    final List<int> featuredShows = [];
+    final jsonResponse = await _supabaseRepository.fetchFeaturedShows();
+    jsonResponse?.forEach((element) {
+      final shows = element['shows'] as List<dynamic>;
+      for (final show in shows) {
+        featuredShows.add(show['id'] as int);
+      }
+    });
+    Logger().d('Featured Show ids: $featuredShows');
+    return featuredShows;
+  }
+
   Future<List<int>> getAllCompleted({required int userId}) async {
     final List<int> completedShows = [];
     final jsonResponse =

@@ -39,6 +39,21 @@ class ShowService {
     return favoriteShows;
   }
 
+  Future<List<Show>> getFeaturedShows() async {
+    final SupabaseServices supabaseServices = SupabaseServices(
+      supabaseRepository: SupabaseRepository(),
+    );
+    final List<int> featuredIds = await supabaseServices.getAllFeaturedShows();
+    final List<Show> featuredShows = [];
+    for (final int featuredId in featuredIds) {
+      final jsonResponse =
+          await _tvMazeRepository.getShowById(showId: featuredId);
+      final show = Show.fromJson(jsonResponse as Map<String, dynamic>);
+      featuredShows.add(show);
+    }
+    return featuredShows;
+  }
+
   Future<List<Show>> getAllCompleted({required int userId}) async {
     final SupabaseServices supabaseServices = SupabaseServices(
       supabaseRepository: SupabaseRepository(),

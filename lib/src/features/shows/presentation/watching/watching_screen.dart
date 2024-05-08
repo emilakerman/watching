@@ -8,20 +8,20 @@ class WatchingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<SupabaseCubit>().getAllWatching();
-    return BlocBuilder<SupabaseCubit, SupabaseCubitState>(
-      builder: (context, state) {
-        if (state.isLoading) {
-          return const LoadingAnimation();
-        }
-        return Scaffold(
-          body: Column(
+    return Scaffold(
+      body: BlocBuilder<SupabaseCubit, SupabaseCubitState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const LoadingAnimation();
+          }
+          return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Card(
                         child: SizedBox(
                           height: 50,
@@ -36,14 +36,17 @@ class WatchingScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SearchView(shows: state.show),
+                    SearchView(
+                      shows: state.show,
+                      deleteFeature: true,
+                    ),
                   ],
                 ),
               ),
             ],
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

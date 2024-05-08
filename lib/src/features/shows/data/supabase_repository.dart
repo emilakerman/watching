@@ -155,4 +155,14 @@ class SupabaseRepository {
       return null;
     }
   }
+
+  Future<List<Map<String, dynamic>>?> fetchFeaturedShows() async {
+    try {
+      Logger().d('Fetching featured shows...');
+      return await supabase.from('Featured').select().eq('id', 1);
+    } catch (error) {
+      Logger().d('Error fetching featured shows: $error');
+      return null;
+    }
+  }
 }

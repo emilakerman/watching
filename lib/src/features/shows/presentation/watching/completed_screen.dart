@@ -21,7 +21,7 @@ class CompletedScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Card(
                         child: SizedBox(
                           height: 50,
@@ -36,7 +36,10 @@ class CompletedScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SearchView(shows: state.show),
+                    SearchView(
+                      shows: state.show,
+                      deleteFeature: true,
+                    ),
                   ],
                 ),
               ),

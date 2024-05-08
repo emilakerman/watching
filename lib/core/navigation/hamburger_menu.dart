@@ -98,6 +98,16 @@ class HamburgerMenu extends StatelessWidget {
                 context.goNamed(WatchingRoutesNames.planToWatch);
               },
             ),
+            MenuDivider(),
+            ListTile(
+              leading: Icon(Icons.featured_play_list_outlined),
+              title: Text('Featured'),
+              onTap: () {
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+                context.goNamed(WatchingRoutesNames.featured);
+              },
+            ),
           ],
         );
       },

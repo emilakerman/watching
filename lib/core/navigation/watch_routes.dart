@@ -23,7 +23,7 @@ final watchingRoutes = [
                       padding: const EdgeInsets.only(right: 15.0),
                       child: GestureDetector(
                         onTap: () =>
-                            context.goNamed(WatchingRoutesNames.profile),
+                            context.pushNamed(WatchingRoutesNames.profile),
                         child: const CircleAvatar(
                           radius: 15,
                           child: Center(
@@ -93,6 +93,7 @@ final _discoverRoute = GoRoute(
     _watchingRoute,
     _completedRoute,
     _planToWatchRoute,
+    _featuredRoute,
   ],
 );
 
@@ -139,6 +140,18 @@ final _planToWatchRoute = GoRoute(
   builder: (context, state) {
     return const PlanToWatchScreen(
       key: Key(WatchingRoutesNames.planToWatch),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Featured Screen route
+final _featuredRoute = GoRoute(
+  path: WatchingRoutesNames.featured,
+  name: WatchingRoutesNames.featured,
+  builder: (context, state) {
+    return const FeaturedScreen(
+      key: Key(WatchingRoutesNames.featured),
     );
   },
   routes: const [],

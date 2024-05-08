@@ -20,6 +20,9 @@ class WatchingRoutesNames {
 
   /// Route is: plan-to-watch
   static const planToWatch = 'planToWatch';
+
+  /// Route is: featured
+  static const featured = 'featured';
 }
 
 extension RoutesX on String {
