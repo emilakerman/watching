@@ -15,6 +15,12 @@ class SearchWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 7),
       child: SearchBar(
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        backgroundColor: const MaterialStatePropertyAll(Color(0xff1b1b22)),
         controller: searchController,
         trailing: [
           BlocBuilder<ShowCubit, ShowCubitState>(

@@ -62,6 +62,27 @@ class ShowCubit extends Cubit<ShowCubitState> {
     }
   }
 
+  Future<void> getAllFeatured() async {
+    try {
+      emit(state.copyWith(status: ShowsCubitStatus.loading));
+      final List<Show> featuredShows = await _showService.getFeaturedShows();
+      emit(
+        state.copyWith(
+          status: ShowsCubitStatus.success,
+          shows: featuredShows,
+        ),
+      );
+    } catch (error) {
+      Logger().d(error.toString());
+      emit(
+        state.copyWith(
+          status: ShowsCubitStatus.error,
+          errorMessage: error.toString(),
+        ),
+      );
+    }
+  }
+
   Future<void> getAllShows() async {
     try {
       if (await _localStorage
