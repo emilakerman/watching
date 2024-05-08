@@ -28,6 +28,7 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
         super(SupabaseCubitState());
 
   final FirebaseAuthRepository _authRepository = FirebaseAuthRepository();
+  final SupabaseRepository _supabaseRepository = SupabaseRepository();
   final ShowService _showService = ShowService(
     tvMazeRepository: TvMazeRepository(),
   );
@@ -179,6 +180,54 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
       );
     }
   }
+
+  // Future<void> createSettingsRowInSupabase({
+  //   required int userId,
+  //   required bool isPublic,
+  // }) async {
+  //   try {
+  //     emit(state.copyWith(status: SupabaseCubitStatus.loading));
+  //     await _supabaseRepository.createSettingsRowInSupabase(
+  //       userId: userId,
+  //       isPublic: isPublic,
+  //     );
+  //     emit(
+  //       state.copyWith(status: SupabaseCubitStatus.success),
+  //     );
+  //   } catch (error) {
+  //     Logger().d(error.toString());
+  //     emit(
+  //       state.copyWith(
+  //         status: SupabaseCubitStatus.error,
+  //         errorMessage: error.toString(),
+  //       ),
+  //     );
+  //   }
+  // }
+
+  // Future<void> checkUserSettingsInSupabase({required int userId}) async {
+  //   try {
+  //     emit(state.copyWith(status: SupabaseCubitStatus.loading));
+  //     final bool isPublic =
+  //         await _supabaseRepository.checkUserSettingsInSupabase(
+  //       userId: userId,
+  //     );
+  //     emit(
+  //       state.copyWith(
+  //         status: SupabaseCubitStatus.success,
+  //         show: state.show,
+  //       ),
+  //     );
+  //   } catch (error) {
+  //     Logger().d(error.toString());
+  //     emit(
+  //       state.copyWith(
+  //         status: SupabaseCubitStatus.error,
+  //         errorMessage: error.toString(),
+  //       ),
+  //     );
+  //   }
+  // }
 
   final SupabaseServices _supabaseServices;
 }

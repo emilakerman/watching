@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -163,6 +165,66 @@ class SupabaseRepository {
     } catch (error) {
       Logger().d('Error fetching featured shows: $error');
       return null;
+    }
+  }
+
+  Future<void> updateSettingsRowInSupabase({
+    required int userId,
+    required bool isPublic,
+  }) async {
+    try {
+      final settings = await supabase
+          .from('Settings')
+          .select('isPublic')
+          .eq('id', userId)
+          .single();
+
+      settings['isPublic'] = isPublic;
+      await supabase.from('Settings').update(settings).eq('id', userId);
+      Logger().d('Settings updated in Supabase with isPublic: $isPublic');
+    } catch (error) {
+      Logger().d('Error updating settings in supabase: $error');
+    }
+  }
+
+  Future<void> createSettingsRowInSupabase({
+    required int userId,
+    required bool isPublic,
+  }) async {
+    try {
+      await supabase.from('Settings').insert(
+        [
+          {
+            'id': userId,
+            'isPublic': isPublic,
+          },
+        ],
+      );
+      Logger().d('Settings added it Supabase with isPublic: $isPublic');
+    } catch (error) {
+      Logger().d('Error creating settings in supabase: $error');
+    }
+  }
+
+  Future<bool> checkUserSettingsInSupabase({
+    required int userId,
+  }) async {
+    try {
+      final response =
+          await supabase.from('Settings').select().eq('id', userId);
+      Logger().d('User has settings in Supabase: $response');
+      final settings = await supabase
+          .from('Settings')
+          .select('isPublic')
+          .eq('id', userId)
+          .single();
+      return settings['isPublic'] as bool;
+    } catch (error) {
+      Logger().d('User does not have settings in supabase: $error');
+      Logger().d('Creating settings row in Supabase...');
+      await createSettingsRowInSupabase(userId: userId, isPublic: false);
+      Logger().d('Created settings row in supabase!');
+      return false;
     }
   }
 }

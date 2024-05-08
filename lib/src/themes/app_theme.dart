@@ -5,7 +5,7 @@ class AppTheme {
   /// Returns the standard light theme.
   static ThemeData get standard {
     return ThemeData(
-      scaffoldBackgroundColor: Colors.grey[1000],
+      scaffoldBackgroundColor: const Color(0xff1c1a1e),
       useMaterial3: true,
       brightness: Brightness.dark,
       textTheme: const TextTheme(

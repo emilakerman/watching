@@ -23,6 +23,9 @@ class WatchingRoutesNames {
 
   /// Route is: featured
   static const featured = 'featured';
+
+  /// Route is: settings
+  static const settings = 'settings';
 }
 
 extension RoutesX on String {

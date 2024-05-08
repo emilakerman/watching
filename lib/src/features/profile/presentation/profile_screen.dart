@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:watching/core/core.dart';
 import 'package:watching/src/src.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -495,7 +496,7 @@ class TopButtonRow extends StatelessWidget {
                     Colors.white,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () => context.goNamed(WatchingRoutesNames.settings),
                 icon: const Icon(Icons.settings),
               ),
             ],
