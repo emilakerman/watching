@@ -4,12 +4,10 @@ import 'package:watching/src/src.dart';
 
 class WatchingAlert extends StatelessWidget {
   const WatchingAlert({
-    required this.showid,
     required this.userId,
     required this.show,
     super.key,
   });
-  final int showid;
   final int userId;
   final Show show;
 
@@ -58,7 +56,7 @@ class WatchingAlert extends StatelessWidget {
                 onPressed: () {
                   context.read<SupabaseCubit>().addNewShow(
                         userId: userId,
-                        showid: showid,
+                        showid: show.id,
                         showStatus: 'watching',
                         show: show,
                       );
@@ -69,7 +67,7 @@ class WatchingAlert extends StatelessWidget {
                 onPressed: () {
                   context.read<SupabaseCubit>().addNewShow(
                         userId: userId,
-                        showid: showid,
+                        showid: show.id,
                         showStatus: 'plan-to-watch',
                         show: show,
                       );
@@ -80,7 +78,7 @@ class WatchingAlert extends StatelessWidget {
                 onPressed: () {
                   context.read<SupabaseCubit>().addNewShow(
                         userId: userId,
-                        showid: showid,
+                        showid: show.id,
                         showStatus: 'completed',
                         show: show,
                       );

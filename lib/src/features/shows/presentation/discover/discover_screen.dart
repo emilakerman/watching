@@ -329,7 +329,6 @@ class SearchView extends StatelessWidget {
                                   context: context,
                                   builder: (context) => WatchingAlert(
                                     show: show,
-                                    showid: show.id,
                                     userId: userId,
                                   ),
                                 );
