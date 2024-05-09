@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/src.dart';
 
@@ -84,24 +85,9 @@ class FavoritesCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Favorites",
-                                style: textTheme.displayLarge,
-                              ),
-                              // TODO(Any): Implement navigation to view all favorites or bottom sheet.
-                              InkWell(
-                                onTap: () => {},
-                                child: Text(
-                                  "View All",
-                                  style: textTheme.displayMedium?.copyWith(
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Text(
+                            "Favorites",
+                            style: textTheme.displayLarge,
                           ),
                           const SizedBox(height: 3),
                           Text(
@@ -209,27 +195,11 @@ class BadgesCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Badges",
-                                style: textTheme.displayLarge,
-                              ),
-                              // TODO(Any): Implement navigation to view all badges or bottom sheet.
-                              InkWell(
-                                onTap: () => {},
-                                child: Text(
-                                  "View All",
-                                  style: textTheme.displayMedium?.copyWith(
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Text(
+                            "Badges",
+                            style: textTheme.displayLarge,
                           ),
                           const SizedBox(height: 3),
-                          // TODO(Any): Replace with real badges count.
                           Text(
                             "${badges.length} unlocked",
                             style: textTheme.displayMedium,
@@ -423,25 +393,25 @@ class BottomTextColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    String? removeAfterAt(String input) {
-      final RegExp exp = RegExp(r"^(.*?)(@.*)?$");
-      return exp.firstMatch(input)?.group(1) ?? "";
-    }
-
     return Positioned(
       bottom: 0,
       child: Padding(
         padding: const EdgeInsets.only(left: 15, bottom: 15),
-        child: BlocBuilder<AuthCubit, AuthCubitState>(
-          builder: (context, state) {
+        child: BlocSelector<LeaderboardCubit, LeaderboardCubitState,
+            CompletedUser?>(
+          selector: (state) {
+            if (state.isLoading) return null;
+            return state.getUserById();
+          },
+          builder: (context, user) {
+            if (user?.nickname == null) return const LoadingAnimation();
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${state.user?.displayName ?? removeAfterAt(state.user?.email ?? "")}',
+                  '${user?.nickname ?? 'Anonymous user'}',
                   style: textTheme.displayLarge,
                 ),
-                Text('${state.user?.email}'),
                 const Text("📍Stockholm, Sweden"),
               ],
             );
