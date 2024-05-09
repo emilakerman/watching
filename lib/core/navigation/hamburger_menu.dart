@@ -22,7 +22,7 @@ class HamburgerMenu extends StatelessWidget {
         return ListView(
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 15),
+              padding: const EdgeInsets.only(left: 15),
               child: SizedBox(
                 height: 50,
                 width: 50,
@@ -47,65 +47,75 @@ class HamburgerMenu extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 25),
-            ListTile(
+            const SizedBox(height: 25),
+            const ListTile(
               title: Text('Browse'),
               onTap: null,
             ),
-            MenuDivider(),
+            const MenuDivider(),
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
+              leading: const Icon(Icons.home),
+              title: const Text('Home'),
               onTap: () {},
             ),
-            MenuDivider(),
+            const MenuDivider(),
             ListTile(
-              leading: Icon(Icons.search),
-              title: Text('Search'),
+              leading: const Icon(Icons.search),
+              title: const Text('Search'),
               onTap: () {
                 if (!context.mounted) return;
                 Navigator.of(context).pop();
                 context.pushNamed(WatchingRoutesNames.discover);
               },
             ),
-            MenuDivider(),
+            const MenuDivider(),
             ListTile(
-              leading: Icon(Icons.tv),
-              title: Text('Watching'),
+              leading: const Icon(Icons.tv),
+              title: const Text('Watching'),
               onTap: () {
                 if (!context.mounted) return;
                 Navigator.of(context).pop();
                 context.goNamed(WatchingRoutesNames.watching);
               },
             ),
-            MenuDivider(),
+            const MenuDivider(),
             ListTile(
-              leading: Icon(Icons.done),
-              title: Text('Completed'),
+              leading: const Icon(Icons.done),
+              title: const Text('Completed'),
               onTap: () {
                 if (!context.mounted) return;
                 Navigator.of(context).pop();
                 context.goNamed(WatchingRoutesNames.completed);
               },
             ),
-            MenuDivider(),
+            const MenuDivider(),
             ListTile(
-              leading: Icon(Icons.next_plan_outlined),
-              title: Text('Plan to Watch'),
+              leading: const Icon(Icons.next_plan_outlined),
+              title: const Text('Plan to Watch'),
               onTap: () {
                 if (!context.mounted) return;
                 Navigator.of(context).pop();
                 context.goNamed(WatchingRoutesNames.planToWatch);
               },
             ),
-            MenuDivider(),
+            const MenuDivider(),
             ListTile(
-              leading: Icon(Icons.featured_play_list_outlined),
-              title: Text('Featured'),
+              leading: const Icon(Icons.featured_play_list_outlined),
+              title: const Text('Featured'),
               onTap: () {
                 if (!context.mounted) return;
                 Navigator.of(context).pop();
                 context.goNamed(WatchingRoutesNames.featured);
+              },
+            ),
+            const MenuDivider(),
+            ListTile(
+              leading: const Icon(Icons.leaderboard),
+              title: const Text('Leaderboard'),
+              onTap: () {
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+                context.goNamed(WatchingRoutesNames.leaderboard);
               },
             ),
           ],

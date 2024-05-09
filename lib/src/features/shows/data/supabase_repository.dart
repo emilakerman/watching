@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -225,6 +223,22 @@ class SupabaseRepository {
       await createSettingsRowInSupabase(userId: userId, isPublic: false);
       Logger().d('Created settings row in supabase!');
       return false;
+    }
+  }
+
+  /// -- Fetches Public Users For the Leaderboard Feature --
+  Future<List<dynamic>?> fetchAllPublicUsers() async {
+    try {
+      final response = await supabase.from('Settings').select().eq(
+            'isPublic',
+            true,
+          );
+      final ids = response.map((user) => user['id']).toList();
+      Logger().d('Users ids with public settings: $ids');
+      return ids;
+    } catch (error) {
+      Logger().d('Error fetching users with public settings: $error');
+      return null;
     }
   }
 }

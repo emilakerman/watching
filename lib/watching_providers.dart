@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watching/config/enums/enums.dart';
 import 'package:watching/src/features/authentication/authentication.dart';
+import 'package:watching/src/features/shows/cubits/leaderboard_cubit.dart';
 import 'package:watching/src/features/shows/shows.dart';
 
 class WatchingProviders extends StatelessWidget {
@@ -46,6 +47,11 @@ class WatchingProviders extends StatelessWidget {
           BlocProvider(
             create: (context) => AuthCubit(
               firebaseAuthRepository: context.read<FirebaseAuthRepository>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => LeaderboardCubit(
+              supabaseServices: context.read<SupabaseServices>(),
             ),
           ),
         ],

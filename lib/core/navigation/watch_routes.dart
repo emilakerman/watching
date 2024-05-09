@@ -102,6 +102,7 @@ final _discoverRoute = GoRoute(
     _completedRoute,
     _planToWatchRoute,
     _featuredRoute,
+    _leaderboardRoute,
   ],
 );
 
@@ -174,6 +175,18 @@ final _settingsRoute = GoRoute(
   builder: (context, state) {
     return const SettingsScreen(
       key: Key(WatchingRoutesNames.settings),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Leaderboard Screen route
+final _leaderboardRoute = GoRoute(
+  path: WatchingRoutesNames.leaderboard,
+  name: WatchingRoutesNames.leaderboard,
+  builder: (context, state) {
+    return const LeaderboardScreen(
+      key: Key(WatchingRoutesNames.leaderboard),
     );
   },
   routes: const [],

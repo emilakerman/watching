@@ -107,5 +107,22 @@ class SupabaseServices {
     }
   }
 
+  /// -- Combined Public Users with their completed shows For the Leaderboard Feature --
+  Future<List<CompletedUser>> fetchAllPublicUsers() async {
+    final Future<List<dynamic>?> users =
+        _supabaseRepository.fetchAllPublicUsers();
+    final List<CompletedUser> completedUsers = [];
+    final List<dynamic>? userList = await users;
+    if (userList != null) {
+      for (final user in userList) {
+        final int userId = user as int;
+        final List<int> completedShows = await getAllCompleted(userId: userId);
+        completedUsers
+            .add(CompletedUser(userId: userId, completedShows: completedShows));
+      }
+    }
+    return completedUsers;
+  }
+
   final SupabaseRepository _supabaseRepository;
 }
