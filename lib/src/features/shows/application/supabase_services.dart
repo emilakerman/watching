@@ -1,5 +1,6 @@
 import 'package:logger/logger.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/utils.dart';
 
 class SupabaseServices {
   SupabaseServices({
@@ -124,6 +125,7 @@ class SupabaseServices {
             userId: userId,
             completedShows: completedShows,
             nickname: nickName,
+            color: stringToColour(nickName),
           ),
         );
       }

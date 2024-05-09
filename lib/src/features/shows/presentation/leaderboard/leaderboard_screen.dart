@@ -21,6 +21,12 @@ class LeaderboardScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final user = state.users![index];
                         return ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: user.color,
+                            child: Text(
+                              user.nickname.isNotEmpty ? user.nickname[0] : 'A',
+                            ),
+                          ),
                           title: Text(
                             user.nickname != ''
                                 ? user.nickname
