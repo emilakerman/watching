@@ -23,8 +23,8 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   FirebaseAuthRepository firebaseAuthRepository = FirebaseAuthRepository();
   SupabaseRepository supabaseRepository = SupabaseRepository();
-  bool isPublicAccount =
-      false; // This will hold the current value for the switch
+  bool isPublicAccount = false;
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
@@ -34,19 +34,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _loadInitialSettings() async {
     final int userId = firebaseAuthRepository.getUser()!.uid.hashCode;
-    bool publicStatus = await supabaseRepository.checkUserSettingsInSupabase(
+    final bool publicStatus =
+        await supabaseRepository.checkUserSettingsInSupabase(
       userId: userId,
     );
+    final String nickName = await supabaseRepository
+        .checkUserSettingsNicknameInSupabase(userId: userId);
     setState(() {
+      _controller.text = nickName;
       isPublicAccount = publicStatus;
     });
   }
 
-  Future<void> _updatePublicSetting(bool newValue) async {
+  Future<void> _updatePublicSetting(bool newValue, String nickName) async {
     final int userId = firebaseAuthRepository.getUser()!.uid.hashCode;
     await supabaseRepository.updateSettingsRowInSupabase(
       userId: userId,
       isPublic: newValue,
+      nickName: nickName,
     );
     setState(() {
       isPublicAccount = newValue;
@@ -55,6 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const Color tileColor = Color(0xff1c1a1e);
     return BlocBuilder<SupabaseCubit, SupabaseCubitState>(
       builder: (context, state) {
         return Scaffold(
@@ -71,9 +77,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   title: const Text('Public Account'),
                   trailing: Switch(
                     value: isPublicAccount,
-                    onChanged: _updatePublicSetting,
+                    onChanged: (value) {
+                      setState(() {
+                        isPublicAccount = !isPublicAccount;
+                      });
+                    },
                   ),
-                  onTap: () => _updatePublicSetting(!isPublicAccount),
+                  onTap: () => isPublicAccount = !isPublicAccount,
+                ),
+                const TileDivider(),
+                ListTile(
+                  tileColor: tileColor,
+                  title: const Text('Nickname'),
+                  trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 18),
+                      SizedBox(
+                        height: 10,
+                        width: 100,
+                        child: TextField(
+                          controller: _controller,
+                        ),
+                      ),
+                    ],
+                  ),
+                  onTap: () {},
                 ),
                 const TileDivider(),
                 const ListTile(
@@ -81,7 +110,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
                 const TileDivider(),
                 ListTile(
-                  tileColor: const Color(0xff1c1a1e),
+                  tileColor: tileColor,
                   title: const Text('Sign out'),
                   onTap: firebaseAuthRepository.signOut,
                 ),
@@ -92,11 +121,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: FloatingActionButton(
-            onPressed: () => _updatePublicSetting(isPublicAccount),
+            onPressed: () => _updatePublicSetting(
+              isPublicAccount,
+              _controller.text,
+            ),
             child: const Icon(Icons.save, size: 35),
           ),
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 }
