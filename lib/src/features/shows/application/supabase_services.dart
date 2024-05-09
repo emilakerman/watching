@@ -1,5 +1,6 @@
 import 'package:logger/logger.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/utils.dart';
 
 class SupabaseServices {
   SupabaseServices({
@@ -105,6 +106,31 @@ class SupabaseServices {
     } catch (error) {
       Logger().d('Error removing show: $error');
     }
+  }
+
+  /// -- Combined Public Users with their completed shows and nicknames For the Leaderboard Feature --
+  Future<List<CompletedUser>> fetchAllPublicUsers() async {
+    final Future<List<dynamic>?> users =
+        _supabaseRepository.fetchAllPublicUsers();
+    final List<CompletedUser> completedUsers = [];
+    final List<dynamic>? userList = await users;
+    if (userList != null) {
+      for (final user in userList) {
+        final int userId = user as int;
+        final List<int> completedShows = await getAllCompleted(userId: userId);
+        final String nickName = await _supabaseRepository
+            .checkUserSettingsNicknameInSupabase(userId: userId);
+        completedUsers.add(
+          CompletedUser(
+            userId: userId,
+            completedShows: completedShows,
+            nickname: nickName,
+            color: stringToColour(nickName),
+          ),
+        );
+      }
+    }
+    return completedUsers;
   }
 
   final SupabaseRepository _supabaseRepository;

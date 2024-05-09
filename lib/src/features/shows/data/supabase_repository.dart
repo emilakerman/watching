@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:logger/logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -128,6 +126,14 @@ class SupabaseRepository {
           {'userId': userId},
         ],
       );
+      await supabase.from('Shows').insert(
+        [
+          {
+            'userId': userId,
+            'shows': [{}],
+          },
+        ],
+      );
       Logger().d('User created in Supabase');
     } catch (error) {
       Logger().d('Error creating user in supabase: $error');
@@ -138,8 +144,12 @@ class SupabaseRepository {
     try {
       final response =
           await supabase.from('Users').select().eq('userId', userId);
-      Logger().d('User exists in Supabase: $response');
-      return true;
+      if (response.isNotEmpty) {
+        Logger().d('User exists in Supabase: $response');
+        return true;
+      } else {
+        return false;
+      }
     } catch (error) {
       Logger().d('User does not exist in supabase: $error');
       return false;
@@ -171,6 +181,7 @@ class SupabaseRepository {
   Future<void> updateSettingsRowInSupabase({
     required int userId,
     required bool isPublic,
+    required String nickName,
   }) async {
     try {
       final settings = await supabase
@@ -180,8 +191,10 @@ class SupabaseRepository {
           .single();
 
       settings['isPublic'] = isPublic;
+      settings['nickname'] = nickName;
       await supabase.from('Settings').update(settings).eq('id', userId);
-      Logger().d('Settings updated in Supabase with isPublic: $isPublic');
+      Logger().d(
+          'Settings updated in Supabase with isPublic: $isPublic and nickname: $nickName');
     } catch (error) {
       Logger().d('Error updating settings in supabase: $error');
     }
@@ -225,6 +238,44 @@ class SupabaseRepository {
       await createSettingsRowInSupabase(userId: userId, isPublic: false);
       Logger().d('Created settings row in supabase!');
       return false;
+    }
+  }
+
+  Future<String> checkUserSettingsNicknameInSupabase({
+    required int userId,
+  }) async {
+    try {
+      final response =
+          await supabase.from('Settings').select().eq('id', userId);
+      Logger().d('User has settings in Supabase: $response');
+      final settings = await supabase
+          .from('Settings')
+          .select('nickname')
+          .eq('id', userId)
+          .single();
+      return settings['nickname'] as String;
+    } catch (error) {
+      Logger().d('User does not have settings in supabase: $error');
+      Logger().d('Creating settings row in Supabase...');
+      await createSettingsRowInSupabase(userId: userId, isPublic: false);
+      Logger().d('Created settings row in supabase!');
+      return '';
+    }
+  }
+
+  /// -- Fetches Public Users For the Leaderboard Feature --
+  Future<List<dynamic>?> fetchAllPublicUsers() async {
+    try {
+      final response = await supabase.from('Settings').select().eq(
+            'isPublic',
+            true,
+          );
+      final ids = response.map((user) => user['id']).toList();
+      Logger().d('Users ids with public settings: $ids');
+      return ids;
+    } catch (error) {
+      Logger().d('Error fetching users with public settings: $error');
+      return null;
     }
   }
 }
