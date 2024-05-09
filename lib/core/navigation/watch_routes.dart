@@ -21,7 +21,8 @@ final watchingRoutes = [
                   title: const Text('Watching'),
                   leading: isOnSettingsPage
                       ? BackButton(
-                          onPressed: context.pop,
+                          onPressed: () =>
+                              context.goNamed(WatchingRoutesNames.profile),
                         )
                       : null,
                   actions: [

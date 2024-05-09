@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
@@ -23,7 +24,16 @@ class LeaderboardCubitState with _$LeaderboardCubitState {
   CompletedUser? getUserById() {
     final FirebaseAuthRepository firebaseAuthRepo = FirebaseAuthRepository();
     final int userId = firebaseAuthRepo.getUser()!.uid.hashCode;
-    return users?.firstWhere((user) => user.userId == userId);
+    // Error handling if user is not the in settings table.
+    return users?.firstWhere(
+      (user) => user.userId == userId,
+      orElse: () => const CompletedUser(
+        userId: 1111111111111111,
+        completedShows: [],
+        nickname: 'Anonymous',
+        color: Colors.grey,
+      ),
+    );
   }
 }
 

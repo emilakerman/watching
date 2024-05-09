@@ -10,6 +10,31 @@ class FirebaseAuthRepository {
 
   User? getUser() => _auth.currentUser;
 
+  Future<void> createUser({
+    required String email,
+    required String password,
+    required BuildContext context,
+  }) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      Logger().d('User ${getUser()?.email} created!');
+    } on FirebaseAuthException catch (error) {
+      var errorMessage = 'Error!';
+      if (!context.mounted) return;
+      if (error.message!.contains('email-already-in-use')) {
+        errorMessage = 'emailAlreadyInUseErrorMessage';
+      } else if (error.message!.contains('invalid-email')) {
+        errorMessage = 'invalidEmailErrorMessage';
+      } else if (error.message!.contains('operation-not-allowed')) {
+        errorMessage = 'operationNotAllowedErrorMessage';
+      } else if (error.message!.contains('weak-password')) {
+        errorMessage = 'weakPasswordErrorMessage';
+      }
+      Logger().d('Auth Error: $errorMessage');
+    }
+  }
+
   Future<void> signInUser({
     required String email,
     required String password,

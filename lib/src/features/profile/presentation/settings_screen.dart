@@ -40,6 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     final String nickName = await supabaseRepository
         .checkUserSettingsNicknameInSupabase(userId: userId);
+    if (!context.mounted) return;
     setState(() {
       _controller.text = nickName;
       isPublicAccount = publicStatus;
@@ -102,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ],
                   ),
-                  onTap: () {},
+                  onTap: () => null,
                 ),
                 const TileDivider(),
                 const ListTile(
