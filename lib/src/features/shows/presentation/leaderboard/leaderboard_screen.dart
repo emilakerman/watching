@@ -21,7 +21,11 @@ class LeaderboardScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final user = state.users![index];
                         return ListTile(
-                          title: Text(user.userId.toString()),
+                          title: Text(
+                            user.nickname != ''
+                                ? user.nickname
+                                : 'Anonymous User',
+                          ),
                           subtitle: Text(
                             'Completed Shows: ${user.completedShows.length}',
                           ),

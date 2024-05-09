@@ -126,6 +126,14 @@ class SupabaseRepository {
           {'userId': userId},
         ],
       );
+      await supabase.from('Shows').insert(
+        [
+          {
+            'userId': userId,
+            'shows': [{}],
+          },
+        ],
+      );
       Logger().d('User created in Supabase');
     } catch (error) {
       Logger().d('Error creating user in supabase: $error');
@@ -136,8 +144,12 @@ class SupabaseRepository {
     try {
       final response =
           await supabase.from('Users').select().eq('userId', userId);
-      Logger().d('User exists in Supabase: $response');
-      return true;
+      if (response.isNotEmpty) {
+        Logger().d('User exists in Supabase: $response');
+        return true;
+      } else {
+        return false;
+      }
     } catch (error) {
       Logger().d('User does not exist in supabase: $error');
       return false;

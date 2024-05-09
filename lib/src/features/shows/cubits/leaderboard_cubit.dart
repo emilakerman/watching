@@ -1,5 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
@@ -34,6 +33,9 @@ class LeaderboardCubit extends Cubit<LeaderboardCubitState> {
     emit(state.copyWith(status: LeaderboardCubitStatus.loading));
     try {
       final users = await _supabaseServices.fetchAllPublicUsers();
+      users.sort(
+        (a, b) => b.completedShows.length.compareTo(a.completedShows.length),
+      );
       emit(
         state.copyWith(
           status: LeaderboardCubitStatus.success,
