@@ -74,7 +74,6 @@ class AuthCubit extends Cubit<AuthCubitState> {
     emit(state.copyWith(status: AuthCubitStatus.loading));
     try {
       final user = _firebaseAuthRepository.getUser();
-      Logger().d('User uid: ${user?.uid}');
       emit(
         state.copyWith(
           status: AuthCubitStatus.success,
