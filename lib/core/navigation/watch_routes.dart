@@ -11,18 +11,19 @@ final watchingRoutes = [
       final isOnLoginPage = state.fullPath == WatchingRoutesNames.root.path;
       final isOnProfilePage = state.fullPath == '/discover/profile';
       final isOnSettingsPage = state.fullPath == '/discover/profile/settings';
+      final isOnShowPage = state.fullPath!.contains('show');
       if (isOnLoginPage) {
         return child;
       } else {
         return Scaffold(
           key: scaffoldKey,
-          appBar: !isOnProfilePage
+          appBar: !isOnProfilePage && !isOnShowPage
               ? AppBar(
                   title: const Text('Watching'),
                   leading: isOnSettingsPage
                       ? BackButton(
                           onPressed: () =>
-                              context.goNamed(WatchingRoutesNames.profile),
+                              context.pop(WatchingRoutesNames.profile),
                         )
                       : null,
                   actions: [
@@ -104,6 +105,7 @@ final _discoverRoute = GoRoute(
     _planToWatchRoute,
     _featuredRoute,
     _leaderboardRoute,
+    _showRoute,
   ],
 );
 
@@ -188,6 +190,19 @@ final _leaderboardRoute = GoRoute(
   builder: (context, state) {
     return const LeaderboardScreen(
       key: Key(WatchingRoutesNames.leaderboard),
+    );
+  },
+  routes: const [],
+);
+
+/// --- Show Screen route
+final _showRoute = GoRoute(
+  path: 'show/:showId',
+  name: WatchingRoutesNames.show,
+  builder: (context, state) {
+    return ShowScreen(
+      showId: int.tryParse(state.pathParameters['showId']!),
+      key: const Key(WatchingRoutesNames.show),
     );
   },
   routes: const [],
