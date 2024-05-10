@@ -54,6 +54,11 @@ class WatchingProviders extends StatelessWidget {
               supabaseServices: context.read<SupabaseServices>(),
             ),
           ),
+          BlocProvider(
+            create: (context) => SettingsCubit(
+              supabaseServices: context.read<SupabaseServices>(),
+            ),
+          ),
         ],
         child: child,
       ),

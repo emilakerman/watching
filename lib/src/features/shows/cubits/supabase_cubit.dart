@@ -28,7 +28,6 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
         super(SupabaseCubitState());
 
   final FirebaseAuthRepository _authRepository = FirebaseAuthRepository();
-  final SupabaseRepository _supabaseRepository = SupabaseRepository();
   final ShowService _showService = ShowService(
     tvMazeRepository: TvMazeRepository(),
   );

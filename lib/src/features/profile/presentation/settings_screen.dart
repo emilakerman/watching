@@ -49,11 +49,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _updatePublicSetting(bool newValue, String nickName) async {
     final int userId = firebaseAuthRepository.getUser()!.uid.hashCode;
-    await supabaseRepository.updateSettingsRowInSupabase(
-      userId: userId,
-      isPublic: newValue,
-      nickName: nickName,
-    );
+    await context.read<SettingsCubit>().updateSettingsRowInSupabase(
+          userId: userId,
+          isPublic: newValue,
+          nickName: nickName,
+        );
+    if (!context.mounted) return;
     setState(() {
       isPublicAccount = newValue;
     });

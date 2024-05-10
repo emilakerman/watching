@@ -20,21 +20,6 @@ class LeaderboardCubitState with _$LeaderboardCubitState {
   bool get isLoading => status == LeaderboardCubitStatus.loading;
   bool get isError => status == LeaderboardCubitStatus.error;
   bool get isSuccess => status == LeaderboardCubitStatus.success;
-
-  CompletedUser? getUserById() {
-    final FirebaseAuthRepository firebaseAuthRepo = FirebaseAuthRepository();
-    final int userId = firebaseAuthRepo.getUser()!.uid.hashCode;
-    // Error handling if user is not the in settings table.
-    return users?.firstWhere(
-      (user) => user.userId == userId,
-      orElse: () => const CompletedUser(
-        userId: 1111111111111111,
-        completedShows: [],
-        nickname: 'Anonymous',
-        color: Colors.grey,
-      ),
-    );
-  }
 }
 
 class LeaderboardCubit extends Cubit<LeaderboardCubitState> {

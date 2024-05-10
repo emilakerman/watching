@@ -241,6 +241,18 @@ class SupabaseRepository {
     }
   }
 
+  // -- For Settings Cubit -- //
+  Future<List<Map<String, dynamic>>?>? fetchAllSettings() {
+    try {
+      final response = supabase.from('Settings').select();
+      Logger().d('All settings fetched from Supabase: $response');
+      return response;
+    } catch (error) {
+      Logger().d('Error fetching all settings from supabase: $error');
+      return null;
+    }
+  }
+
   Future<String> checkUserSettingsNicknameInSupabase({
     required int userId,
   }) async {

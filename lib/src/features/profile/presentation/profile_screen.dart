@@ -396,10 +396,8 @@ class BottomTextColumn extends StatelessWidget {
       bottom: 0,
       child: Padding(
         padding: const EdgeInsets.only(left: 15, bottom: 15),
-        child: BlocSelector<LeaderboardCubit, LeaderboardCubitState,
-            CompletedUser?>(
+        child: BlocSelector<SettingsCubit, SettingsCubitState, Settings?>(
           selector: (state) {
-            if (state.isLoading) return null;
             return state.getUserById();
           },
           builder: (context, user) {

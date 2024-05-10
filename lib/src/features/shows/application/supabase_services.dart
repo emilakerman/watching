@@ -133,5 +133,41 @@ class SupabaseServices {
     return completedUsers;
   }
 
+  // -- For Settings Cubit -- //
+  Future<List<Settings>> fetchAllSettings() async {
+    final List<Settings> settings = [];
+    final List<Map<String, dynamic>>? settingsList =
+        await _supabaseRepository.fetchAllSettings();
+    if (settingsList != null) {
+      for (final setting in settingsList) {
+        settings.add(
+          Settings(
+            userId: setting['id'] as int,
+            isPublic: setting['isPublic'] as bool,
+            nickname: setting['nickname'] as String,
+          ),
+        );
+      }
+    }
+    return settings;
+  }
+
+  Future<void> updateSettingsRowInSupabase({
+    required int userId,
+    required bool isPublic,
+    required String nickName,
+  }) async {
+    try {
+      await _supabaseRepository.updateSettingsRowInSupabase(
+        userId: userId,
+        isPublic: isPublic,
+        nickName: nickName,
+      );
+      Logger().d('Settings updated in Supabase with isPublic: $isPublic');
+    } catch (error) {
+      Logger().d('Error updating settings in supabase: $error');
+    }
+  }
+
   final SupabaseRepository _supabaseRepository;
 }
