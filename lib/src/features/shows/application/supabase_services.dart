@@ -169,5 +169,21 @@ class SupabaseServices {
     }
   }
 
+  Future<void> toggleFavoriteShow({
+    required int userId,
+    required int showid,
+    required bool isFavorite,
+  }) async {
+    try {
+      await _supabaseRepository.toggleFavoriteShow(
+        userId: userId,
+        showid: showid,
+        isFavorite: isFavorite,
+      );
+    } catch (error) {
+      Logger().d('Error toggling favorite show: $error');
+    }
+  }
+
   final SupabaseRepository _supabaseRepository;
 }

@@ -29,6 +29,9 @@ class WatchingRoutesNames {
 
   /// Route is: leaderboard
   static const leaderboard = 'leaderboard';
+
+  /// Route is: show
+  static const show = 'show';
 }
 
 extension RoutesX on String {

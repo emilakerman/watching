@@ -6,6 +6,8 @@ import 'package:watching/src/features/shows/presentation/discover/genres.dart';
 import 'package:watching/src/features/shows/presentation/discover/languages.dart';
 import 'package:watching/src/src.dart';
 
+import '../../../../../core/navigation/navigation.dart';
+
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
 
@@ -272,91 +274,100 @@ class SearchView extends StatelessWidget {
           itemBuilder: (context, index) {
             if (index >= shows.length) return null;
             final Show show = shows[index];
-            return SizedBox(
-              height: 120,
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                color: const Color(0xff1b1b29),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 10,
-                          top: 10,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              show.name,
-                              style: textTheme.displayLarge,
-                            ),
-                            Text(
-                              show.language,
-                              style: textTheme.displayMedium?.copyWith(
-                                color: Colors.grey,
+            return InkWell(
+              onTap: () => context.goNamed(
+                WatchingRoutesNames.show,
+                pathParameters: {
+                  'showId': show.id.toString(),
+                },
+              ),
+              child: SizedBox(
+                height: 120,
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  color: const Color(0xff1b1b29),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            top: 10,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                show.name,
+                                style: textTheme.displayLarge,
                               ),
+                              Text(
+                                show.language,
+                                style: textTheme.displayMedium?.copyWith(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                show.genres.join(', '),
+                                style: textTheme.displayMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: show.image?.medium ??
+                                  'https://i.imgur.com/U0xPF44.jpeg',
+                              width: 90,
+                              height: 120,
+                              progressIndicatorBuilder:
+                                  (context, url, progress) {
+                                return const LoadingAnimation();
+                              },
                             ),
-                            Text(
-                              show.genres.join(', '),
-                              style: textTheme.displayMedium,
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      barrierDismissible: false,
+                                      context: context,
+                                      builder: (context) => WatchingAlert(
+                                        show: show,
+                                        userId: userId,
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.add),
+                                ),
+                                deleteFeature
+                                    ? IconButton(
+                                        onPressed: () {
+                                          context
+                                              .read<SupabaseCubit>()
+                                              .removeShow(
+                                                userId: userId,
+                                                showid: show.id,
+                                              );
+                                        },
+                                        icon: const Icon(Icons.delete),
+                                      )
+                                    : const SizedBox.shrink(),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          CachedNetworkImage(
-                            imageUrl: show.image?.medium ??
-                                'https://i.imgur.com/U0xPF44.jpeg',
-                            width: 90,
-                            height: 120,
-                            progressIndicatorBuilder: (context, url, progress) {
-                              return const LoadingAnimation();
-                            },
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (context) => WatchingAlert(
-                                      show: show,
-                                      userId: userId,
-                                    ),
-                                  );
-                                },
-                                icon: const Icon(Icons.add),
-                              ),
-                              deleteFeature
-                                  ? IconButton(
-                                      onPressed: () {
-                                        context
-                                            .read<SupabaseCubit>()
-                                            .removeShow(
-                                              userId: userId,
-                                              showid: show.id,
-                                            );
-                                      },
-                                      icon: const Icon(Icons.delete),
-                                    )
-                                  : const SizedBox.shrink(),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );

@@ -27,6 +27,10 @@ class ShowCubitState with _$ShowCubitState {
   Show? getShowByName(String name) {
     return shows.firstWhereOrNull((show) => show.name == name);
   }
+
+  Show? getShowbyId(int id) {
+    return shows.firstWhereOrNull((show) => show.id == id);
+  }
 }
 
 class ShowCubit extends Cubit<ShowCubitState> {
@@ -59,6 +63,7 @@ class ShowCubit extends Cubit<ShowCubitState> {
           errorMessage: error.toString(),
         ),
       );
+      await getAllShows();
     }
   }
 

@@ -19,6 +19,9 @@ class SupabaseRepository {
       show['shows'].asMap().forEach((index, value) {
         if (value['showid'] == showid) {
           show['shows'][index]['favorite'] = isFavorite;
+        } else {
+          Logger().d('Show not found in users Supabase');
+          return;
         }
       });
       await supabase.from('Shows').update(show).eq('userId', userId);
