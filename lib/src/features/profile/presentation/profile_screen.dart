@@ -1,16 +1,56 @@
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:watching/core/core.dart';
+import 'package:watching/src/features/profile/data/data.dart';
 import 'package:watching/src/src.dart';
 
-class ProfileScreen extends StatelessWidget {
+// pickImage(ImageSource source) async {
+//   final ImagePicker imagePicker = ImagePicker();
+//   final file = await imagePicker.pickImage(source: source);
+//   if (file != null) {
+//     return File(file.path);
+//   }
+// }
+
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String? _imageUrl;
+
+  Future<void> uploadImage({required int userId}) async {
+    const FirebaseStorageRepository firebaseStorageRepo =
+        FirebaseStorageRepository();
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      final String imageUrl = await firebaseStorageRepo.uploadImage(
+        image: imageFile,
+        userIdHashed: userId,
+      );
+      setState(() {
+        _imageUrl = imageUrl;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    const FirebaseStorageRepository firebaseStorageRepo =
+        FirebaseStorageRepository();
     final FirebaseAuthRepository firebaseAuthRepo = FirebaseAuthRepository();
+    final int userId = firebaseAuthRepo.getUser()!.uid.hashCode;
     return BlocProvider(
       create: (context) => AuthCubit(
         firebaseAuthRepository: firebaseAuthRepo,
@@ -21,17 +61,49 @@ class ProfileScreen extends StatelessWidget {
             children: [
               Stack(
                 children: [
-                  CachedNetworkImage(
-                    // TODO(Any): Replace imageUrl with user's profile image.
-                    imageUrl:
-                        'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg' ??
-                            '',
-                    progressIndicatorBuilder: (context, url, progress) {
-                      return const LoadingAnimation();
+                  FutureBuilder(
+                    future: firebaseStorageRepo.getImageURL(
+                      imageName: userId.toString(),
+                    ),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        _imageUrl = snapshot.data;
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const LoadingAnimation();
+                      }
+                      if (_imageUrl == null) return const SizedBox();
+                      return CachedNetworkImage(
+                        width: double.infinity,
+                        height: 400,
+                        fit: BoxFit.cover,
+                        imageUrl:
+                            _imageUrl ?? 'https://via.placeholder.com/150',
+                        progressIndicatorBuilder: (context, url, progress) {
+                          return const LoadingAnimation();
+                        },
+                      );
                     },
                   ),
-                  const GradientContainer(),
-                  const TopButtonRow(),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Theme.of(context).scaffoldBackgroundColor,
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  TopButtonRow(userId: userId, uploadImage: uploadImage),
                   const BottomTextColumn(),
                 ],
               ),
@@ -359,31 +431,6 @@ class RowOfStats extends StatelessWidget {
   }
 }
 
-class GradientContainer extends StatelessWidget {
-  const GradientContainer({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 350.0,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        gradient: LinearGradient(
-          begin: FractionalOffset.topCenter,
-          end: FractionalOffset.bottomCenter,
-          colors: [
-            Colors.grey.withOpacity(0.0),
-            Colors.black,
-          ],
-          stops: const [0.0, 1.0],
-        ),
-      ),
-    );
-  }
-}
-
 class BottomTextColumn extends StatelessWidget {
   const BottomTextColumn({
     super.key,
@@ -422,9 +469,12 @@ class BottomTextColumn extends StatelessWidget {
 
 class TopButtonRow extends StatelessWidget {
   const TopButtonRow({
+    required this.userId,
+    required this.uploadImage,
     super.key,
   });
-
+  final int userId;
+  final Function uploadImage;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -452,7 +502,9 @@ class TopButtonRow extends StatelessWidget {
                     Colors.white,
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () => uploadImage(
+                  userId: userId,
+                ),
                 icon: const Icon(Icons.edit),
               ),
               IconButton(
