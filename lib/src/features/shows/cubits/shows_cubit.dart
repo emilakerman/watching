@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
 import 'package:watching/core/core.dart';
-import 'package:watching/src/features/authentication/authentication.dart';
 import 'package:watching/src/features/shows/shows.dart';
 import 'package:watching/utils/date_extension.dart';
 
