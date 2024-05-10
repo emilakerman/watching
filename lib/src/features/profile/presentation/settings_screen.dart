@@ -93,9 +93,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 8),
                       SizedBox(
-                        height: 10,
+                        height: 20,
                         width: 100,
                         child: TextField(
                           controller: _controller,
@@ -103,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ],
                   ),
-                  onTap: () => null,
+                  onTap: null,
                 ),
                 const TileDivider(),
                 const ListTile(
