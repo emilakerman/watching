@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:watching/src/src.dart';
 
 String removePTagsAndBTags(String text) {
@@ -21,7 +21,7 @@ class ShowScreen extends StatelessWidget {
     return BlocSelector<ShowCubit, ShowCubitState, Show?>(
       selector: (state) {
         if (showId == null) const LoadingAnimation();
-        return state.getShowbyId(showId!);
+        return state.getShowbyId(showId ?? 1);
       },
       builder: (context, show) {
         return Scaffold(
@@ -31,6 +31,9 @@ class ShowScreen extends StatelessWidget {
                 Stack(
                   children: [
                     CachedNetworkImage(
+                      width: double.infinity,
+                      height: 550,
+                      fit: BoxFit.cover,
                       imageUrl: show?.image?.original ??
                           'https://i.imgur.com/U0xPF44.jpeg',
                       progressIndicatorBuilder: (context, url, progress) =>
@@ -83,17 +86,23 @@ class ShowScreen extends StatelessWidget {
                     Colors.grey[800],
                   ),
                 ),
-                onPressed: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) => FavoriteAlert(
-                      show: show!,
-                      userId:
-                          context.read<AuthCubit>().state.user!.uid.hashCode,
-                    ),
-                  );
-                },
+                onPressed: show == null
+                    ? null
+                    : () {
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) => FavoriteAlert(
+                            show: show,
+                            userId: context
+                                .read<AuthCubit>()
+                                .state
+                                .user!
+                                .uid
+                                .hashCode,
+                          ),
+                        );
+                      },
                 icon: Icon(
                   Icons.favorite,
                   color: Colors.red[400],
@@ -109,17 +118,23 @@ class ShowScreen extends StatelessWidget {
                     Colors.grey[800],
                   ),
                 ),
-                onPressed: () {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) => WatchingAlert(
-                      show: show!,
-                      userId:
-                          context.read<AuthCubit>().state.user!.uid.hashCode,
-                    ),
-                  );
-                },
+                onPressed: show == null
+                    ? null
+                    : () {
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) => WatchingAlert(
+                            show: show,
+                            userId: context
+                                .read<AuthCubit>()
+                                .state
+                                .user!
+                                .uid
+                                .hashCode,
+                          ),
+                        );
+                      },
                 icon: Icon(
                   Icons.add,
                   color: Colors.red[400],
@@ -207,7 +222,7 @@ class PopButtonRow extends StatelessWidget {
                     Colors.grey[600],
                   ),
                 ),
-                onPressed: context.pop,
+                onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.close),
               ),
             ],

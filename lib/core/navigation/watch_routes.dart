@@ -48,7 +48,7 @@ final watchingRoutes = [
                 )
               : null,
           body: child,
-          drawer: !isOnSettingsPage
+          drawer: !isOnSettingsPage || !isOnShowPage
               ? const Drawer(
                   child: HamburgerMenu(),
                 )

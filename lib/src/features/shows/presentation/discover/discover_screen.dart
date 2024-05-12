@@ -275,12 +275,14 @@ class SearchView extends StatelessWidget {
             if (index >= shows.length) return null;
             final Show show = shows[index];
             return InkWell(
-              onTap: () => context.goNamed(
-                WatchingRoutesNames.show,
-                pathParameters: {
-                  'showId': show.id.toString(),
-                },
-              ),
+              onTap: () {
+                context.pushNamed(
+                  WatchingRoutesNames.show,
+                  pathParameters: {
+                    'showId': show.id.toString(),
+                  },
+                );
+              },
               child: SizedBox(
                 height: 120,
                 child: Card(
