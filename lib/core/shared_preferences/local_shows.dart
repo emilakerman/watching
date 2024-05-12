@@ -14,6 +14,27 @@ class LocallyStoredShows {
     );
   }
 
+  // Enhanced method to append shows only if they don't exist
+  Future<void> appendShows(List<Show> newShows) async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<Show> currentShows = await readShows(); // Read existing shows
+
+    // Create a set of existing show names for quick lookup
+    var existingShows = Set<String>.from(currentShows.map((show) => show.name));
+
+    // Filter out shows that already exist
+    final List<Show> showsToAdd =
+        newShows.where((show) => !existingShows.contains(show.name)).toList();
+    if (showsToAdd.isNotEmpty) {
+      currentShows.addAll(showsToAdd); // Append new shows
+
+      // Convert all shows to JSON and save them
+      final encodedShows =
+          currentShows.map((show) => json.encode(show.toJson())).toList();
+      await prefs.setStringList(key, encodedShows);
+    }
+  }
+
   Future<List<Show>> readShows() async {
     final prefs = await SharedPreferences.getInstance();
     final encodedShows = prefs.getStringList(key);

@@ -3,6 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
 import 'package:watching/src/src.dart';
 
+import '../../../../core/core.dart';
+
 part 'supabase_cubit.freezed.dart';
 
 enum SupabaseCubitStatus { initial, loading, error, success }
@@ -31,6 +33,7 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
   final ShowService _showService = ShowService(
     tvMazeRepository: TvMazeRepository(),
   );
+  final LocallyStoredShows _localShows = LocallyStoredShows();
 
   Future<void> getAllWatching() async {
     final userId = _authRepository.getUser()!.uid.hashCode;
@@ -39,6 +42,7 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
       final List<Show> fetchedShows = await _showService.getAllWatching(
         userId: userId,
       );
+      await _localShows.appendShows(fetchedShows);
       emit(
         state.copyWith(
           status: SupabaseCubitStatus.success,
@@ -63,6 +67,7 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
       final List<Show> fetchedShows = await _showService.getAllCompleted(
         userId: userId,
       );
+      await _localShows.appendShows(fetchedShows);
       emit(
         state.copyWith(
           status: SupabaseCubitStatus.success,
@@ -87,6 +92,7 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
       final List<Show> fetchedShows = await _showService.getAllPlanToWatch(
         userId: userId,
       );
+      await _localShows.appendShows(fetchedShows);
       emit(
         state.copyWith(
           status: SupabaseCubitStatus.success,
@@ -179,54 +185,6 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
       );
     }
   }
-
-  // Future<void> createSettingsRowInSupabase({
-  //   required int userId,
-  //   required bool isPublic,
-  // }) async {
-  //   try {
-  //     emit(state.copyWith(status: SupabaseCubitStatus.loading));
-  //     await _supabaseRepository.createSettingsRowInSupabase(
-  //       userId: userId,
-  //       isPublic: isPublic,
-  //     );
-  //     emit(
-  //       state.copyWith(status: SupabaseCubitStatus.success),
-  //     );
-  //   } catch (error) {
-  //     Logger().d(error.toString());
-  //     emit(
-  //       state.copyWith(
-  //         status: SupabaseCubitStatus.error,
-  //         errorMessage: error.toString(),
-  //       ),
-  //     );
-  //   }
-  // }
-
-  // Future<void> checkUserSettingsInSupabase({required int userId}) async {
-  //   try {
-  //     emit(state.copyWith(status: SupabaseCubitStatus.loading));
-  //     final bool isPublic =
-  //         await _supabaseRepository.checkUserSettingsInSupabase(
-  //       userId: userId,
-  //     );
-  //     emit(
-  //       state.copyWith(
-  //         status: SupabaseCubitStatus.success,
-  //         show: state.show,
-  //       ),
-  //     );
-  //   } catch (error) {
-  //     Logger().d(error.toString());
-  //     emit(
-  //       state.copyWith(
-  //         status: SupabaseCubitStatus.error,
-  //         errorMessage: error.toString(),
-  //       ),
-  //     );
-  //   }
-  // }
 
   final SupabaseServices _supabaseServices;
 }

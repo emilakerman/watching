@@ -70,9 +70,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         _imageUrl = snapshot.data;
                       }
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const LoadingAnimation();
+                        return const SizedBox(
+                          height: 400,
+                          child: LoadingAnimation(),
+                        );
                       }
-                      if (_imageUrl == null) return const SizedBox();
+                      if (_imageUrl == null)
+                        return const SizedBox(
+                          height: 400,
+                        );
                       return CachedNetworkImage(
                         width: double.infinity,
                         height: 400,

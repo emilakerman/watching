@@ -126,7 +126,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onPressed: () => _updatePublicSetting(
               isPublicAccount,
               _controller.text,
-            ),
+            ).whenComplete(
+                () => context.read<SettingsCubit>().fetchAllSettings()),
             child: const Icon(Icons.save, size: 35),
           ),
         );
