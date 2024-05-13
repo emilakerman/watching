@@ -5,13 +5,14 @@ part 'show.g.dart';
 
 // Define a new class for Image data
 @freezed
-class Image with _$Image {
-  const factory Image({
+class NetworkImage with _$NetworkImage {
+  const factory NetworkImage({
     String? medium,
     String? original,
-  }) = _Image;
+  }) = _NetworkImage;
 
-  factory Image.fromJson(Map<String, dynamic> json) => _$ImageFromJson(json);
+  factory NetworkImage.fromJson(Map<String, dynamic> json) =>
+      _$NetworkImageFromJson(json);
 }
 
 // Update the Show class to use Image
@@ -24,7 +25,7 @@ class Show with _$Show {
     required String language,
     required List<String> genres,
     required String summary,
-    required Image? image, // Use the new Image class
+    required NetworkImage? image, // Use the new Image class
   }) = _Show;
 
   factory Show.fromJson(Map<String, Object?> json) => _$ShowFromJson(json);
@@ -40,7 +41,7 @@ class Show with _$Show {
           .toList(),
       summary: json['show']['summary'] as String,
       image: json['show']['image'] != null
-          ? Image.fromJson(json['show']['image'] as Map<String, dynamic>)
+          ? NetworkImage.fromJson(json['show']['image'] as Map<String, dynamic>)
           : null,
     );
   }

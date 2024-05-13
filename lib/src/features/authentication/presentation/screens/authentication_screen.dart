@@ -30,7 +30,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff0f2829),
+      backgroundColor: const Color(0xff1b1b29),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(40),
@@ -38,13 +38,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Text(
-                'watching',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
+              Image.asset(
+                'assets/images/logo_3.png',
+                height: 103,
               ),
               const SizedBox(height: 40),
               const Text(
@@ -127,7 +123,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen>
                                     style: ButtonStyle(
                                       backgroundColor:
                                           MaterialStateProperty.all(
-                                        const Color(0xff3ca092),
+                                        const Color.fromARGB(255, 68, 68, 84),
                                       ),
                                     ),
                                     child: const Text(
@@ -198,7 +194,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen>
                                     style: ButtonStyle(
                                       backgroundColor:
                                           MaterialStateProperty.all(
-                                        const Color(0xff3ca092),
+                                        const Color.fromARGB(255, 68, 68, 84),
                                       ),
                                     ),
                                     child: const Text(

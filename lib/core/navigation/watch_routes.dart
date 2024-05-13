@@ -19,7 +19,10 @@ final watchingRoutes = [
           key: scaffoldKey,
           appBar: !isOnProfilePage && !isOnShowPage
               ? AppBar(
-                  title: const Text('watching'),
+                  title: Image.asset(
+                    'assets/images/logo_3.png',
+                    height: 58,
+                  ),
                   leading: isOnSettingsPage
                       ? BackButton(
                           onPressed: () =>
