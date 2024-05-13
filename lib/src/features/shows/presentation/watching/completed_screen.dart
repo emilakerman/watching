@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watching/src/src.dart';
 
+import '../../../../../config/config.dart';
+
 class CompletedScreen extends StatelessWidget {
   const CompletedScreen({super.key});
 
@@ -38,6 +40,7 @@ class CompletedScreen extends StatelessWidget {
                     ),
                     SearchView(
                       shows: state.show,
+                      listType: ListType.completed,
                       deleteFeature: true,
                     ),
                   ],

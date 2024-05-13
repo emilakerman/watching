@@ -1,17 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:watching/config/enums/list_types.dart';
 import 'package:watching/src/src.dart';
 
 class WatchingAlert extends StatelessWidget {
   const WatchingAlert({
     required this.userId,
     required this.show,
+    required this.listType,
     super.key,
   });
   final int userId;
   final Show show;
-
+  final ListType listType;
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme;
@@ -54,39 +56,42 @@ class WatchingAlert extends StatelessWidget {
               Text("Select show status:", style: textStyle.titleLarge),
               const SizedBox(),
               const SizedBox(height: 15),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<SupabaseCubit>().addNewShow(
-                        userId: userId,
-                        showid: show.id,
-                        showStatus: 'watching',
-                        show: show,
-                      );
-                },
-                child: const Text("Watching"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<SupabaseCubit>().addNewShow(
-                        userId: userId,
-                        showid: show.id,
-                        showStatus: 'plan-to-watch',
-                        show: show,
-                      );
-                },
-                child: const Text("Plan to Watch"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<SupabaseCubit>().addNewShow(
-                        userId: userId,
-                        showid: show.id,
-                        showStatus: 'completed',
-                        show: show,
-                      );
-                },
-                child: const Text("Completed"),
-              ),
+              if (listType != ListType.watching)
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<SupabaseCubit>().addNewShow(
+                          userId: userId,
+                          showid: show.id,
+                          showStatus: 'watching',
+                          show: show,
+                        );
+                  },
+                  child: const Text("Watching"),
+                ),
+              if (listType != ListType.planToWatch)
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<SupabaseCubit>().addNewShow(
+                          userId: userId,
+                          showid: show.id,
+                          showStatus: 'plan-to-watch',
+                          show: show,
+                        );
+                  },
+                  child: const Text("Plan to Watch"),
+                ),
+              if (listType != ListType.completed)
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<SupabaseCubit>().addNewShow(
+                          userId: userId,
+                          showid: show.id,
+                          showStatus: 'completed',
+                          show: show,
+                        );
+                  },
+                  child: const Text("Completed"),
+                ),
               CupertinoButton(
                 onPressed: Navigator.of(context).pop,
                 child: const Text('Close Dialog'),

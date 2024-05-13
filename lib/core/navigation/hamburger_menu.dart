@@ -56,12 +56,6 @@ class HamburgerMenu extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.home),
               title: const Text('Home'),
-              onTap: () {},
-            ),
-            const MenuDivider(),
-            ListTile(
-              leading: const Icon(Icons.search),
-              title: const Text('Search'),
               onTap: () {
                 if (!context.mounted) return;
                 Navigator.of(context).pop();

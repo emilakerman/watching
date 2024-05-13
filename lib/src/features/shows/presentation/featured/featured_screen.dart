@@ -1,6 +1,7 @@
 import 'package:fan_carousel_image_slider/fan_carousel_image_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:watching/config/enums/list_types.dart';
 import 'package:watching/src/src.dart';
 
 class FeaturedScreen extends StatefulWidget {
@@ -95,6 +96,7 @@ class _FeaturedScreenState extends State<FeaturedScreen> {
                           ),
                           SearchView(
                             shows: state.shows,
+                            listType: ListType.featuredView,
                             deleteFeature: false,
                           ),
                         ],

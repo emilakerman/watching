@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:watching/config/enums/enums.dart';
 import 'package:watching/src/src.dart';
 
 class PlanToWatchScreen extends StatelessWidget {
@@ -38,6 +39,7 @@ class PlanToWatchScreen extends StatelessWidget {
                     ),
                     SearchView(
                       shows: state.show,
+                      listType: ListType.planToWatch,
                       deleteFeature: true,
                     ),
                   ],
