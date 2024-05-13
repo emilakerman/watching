@@ -64,7 +64,7 @@ class AuthCubit extends Cubit<AuthCubitState> {
       emit(
         state.copyWith(
           status: AuthCubitStatus.error,
-          errorMessage: 'Error!',
+          errorMessage: error.toString(),
         ),
       );
     }
@@ -85,7 +85,7 @@ class AuthCubit extends Cubit<AuthCubitState> {
       emit(
         state.copyWith(
           status: AuthCubitStatus.error,
-          errorMessage: 'Error!',
+          errorMessage: error.toString(),
         ),
       );
     }
@@ -127,7 +127,7 @@ class AuthCubit extends Cubit<AuthCubitState> {
       emit(
         state.copyWith(
           status: AuthCubitStatus.error,
-          errorMessage: 'Error!',
+          errorMessage: error.toString(),
         ),
       );
     }

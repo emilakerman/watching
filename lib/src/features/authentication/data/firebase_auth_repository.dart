@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logger/web.dart';
 
+import '../../../src.dart';
+
 class FirebaseAuthRepository {
   final _auth = FirebaseAuth.instance;
 
@@ -17,7 +19,9 @@ class FirebaseAuthRepository {
   }) async {
     try {
       await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       Logger().d('User ${getUser()?.email} created!');
     } on FirebaseAuthException catch (error) {
       var errorMessage = 'Error!';
@@ -31,7 +35,10 @@ class FirebaseAuthRepository {
       } else if (error.message!.contains('weak-password')) {
         errorMessage = 'weakPasswordErrorMessage';
       }
-      Logger().d('Auth Error: $errorMessage');
+      showSnackbar(
+        context: context,
+        message: error.message ?? errorMessage,
+      );
     }
   }
 
@@ -57,7 +64,10 @@ class FirebaseAuthRepository {
       } else if (error.message!.contains('too-many-requests')) {
         errorMessage = 'tooManyAttemptsErrorMessage';
       }
-      Logger().d('Auth Error: $errorMessage');
+      showSnackbar(
+        context: context,
+        message: error.message ?? errorMessage,
+      );
     }
   }
 
