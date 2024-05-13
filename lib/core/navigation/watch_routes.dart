@@ -19,7 +19,7 @@ final watchingRoutes = [
           key: scaffoldKey,
           appBar: !isOnProfilePage && !isOnShowPage
               ? AppBar(
-                  title: const Text('Watching'),
+                  title: const Text('watching'),
                   leading: isOnSettingsPage
                       ? BackButton(
                           onPressed: () =>
@@ -93,9 +93,19 @@ final _rootRoute = GoRoute(
 final _discoverRoute = GoRoute(
   path: WatchingRoutesNames.discover,
   name: WatchingRoutesNames.discover,
-  builder: (context, state) {
-    return const DiscoverScreen(
-      key: Key(WatchingRoutesNames.discover),
+  pageBuilder: (context, state) {
+    return CustomTransitionPage(
+      transitionDuration: const Duration(milliseconds: 400),
+      reverseTransitionDuration: const Duration(milliseconds: 400),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: CurveTween(curve: Curves.easeInOutCirc).animate(animation),
+          child: child,
+        );
+      },
+      child: const DiscoverScreen(
+        key: Key(WatchingRoutesNames.discover),
+      ),
     );
   },
   routes: [
@@ -113,9 +123,19 @@ final _discoverRoute = GoRoute(
 final _profileRoute = GoRoute(
   path: WatchingRoutesNames.profile,
   name: WatchingRoutesNames.profile,
-  builder: (context, state) {
-    return const ProfileScreen(
-      key: Key(WatchingRoutesNames.profile),
+  pageBuilder: (context, state) {
+    return CustomTransitionPage(
+      transitionDuration: const Duration(milliseconds: 600),
+      reverseTransitionDuration: const Duration(milliseconds: 600),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: CurveTween(curve: Curves.easeInOutCirc).animate(animation),
+          child: child,
+        );
+      },
+      child: const ProfileScreen(
+        key: Key(WatchingRoutesNames.profile),
+      ),
     );
   },
   routes: [
