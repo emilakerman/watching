@@ -2,12 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:watching/config/config.dart';
+import 'package:watching/core/navigation/navigation.dart';
 import 'package:watching/src/features/shows/presentation/discover/genres.dart';
 import 'package:watching/src/features/shows/presentation/discover/languages.dart';
 import 'package:watching/src/src.dart';
-
-import '../../../../../config/config.dart';
-import '../../../../../core/navigation/navigation.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -96,15 +95,15 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                                       const Text('Filter by genre'),
                                       TextButton(
                                         onPressed: clearFilters,
-                                        child: Text("Clear Filters"),
+                                        child: const Text("Clear Filters"),
                                       ),
-                                      TextButton(
-                                        onPressed: () =>
-                                            _tabController.animateTo(1),
-                                        child: const Text(
-                                          "Languages",
-                                        ),
-                                      ),
+                                      // TextButton(
+                                      //   onPressed: () =>
+                                      //       _tabController.animateTo(1),
+                                      //   child: const Text(
+                                      //     "Languages",
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ),
@@ -159,7 +158,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                                       const Text('Filter by language'),
                                       TextButton(
                                         onPressed: clearFilters,
-                                        child: Text("Clear Filters"),
+                                        child: const Text("Clear Filters"),
                                       ),
                                       TextButton(
                                         onPressed: () =>
