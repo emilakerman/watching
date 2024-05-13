@@ -2,20 +2,12 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/features/profile/data/data.dart';
 import 'package:watching/src/src.dart';
-
-// pickImage(ImageSource source) async {
-//   final ImagePicker imagePicker = ImagePicker();
-//   final file = await imagePicker.pickImage(source: source);
-//   if (file != null) {
-//     return File(file.path);
-//   }
-// }
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -445,6 +437,7 @@ class BottomTextColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final LocationServies locationServies = LocationServies();
     return Positioned(
       bottom: 0,
       child: Padding(
@@ -462,8 +455,20 @@ class BottomTextColumn extends StatelessWidget {
                   '${user?.nickname ?? 'Anonymous user'}',
                   style: textTheme.displayLarge,
                 ),
-                // TODO(Any): Replace with real location.
-                const Text("📍Stockholm, Sweden"),
+                FutureBuilder<String?>(
+                  future: locationServies.newGetLocation(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const LoadingAnimation();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (snapshot.hasData) {
+                      return Text('📍 Location: ${snapshot.data}');
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                )
               ],
             );
           },
