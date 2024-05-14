@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -9,6 +8,8 @@ import 'package:watching/core/core.dart';
 import 'package:watching/src/features/profile/data/data.dart';
 import 'package:watching/src/src.dart';
 import 'package:watching/utils/hash_converter.dart';
+import "file_operations_io.dart"
+    if (dart.library.html) "file_operations_html.dart";
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -23,18 +24,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> uploadImage({required int userId}) async {
     const FirebaseStorageRepository firebaseStorageRepo =
         FirebaseStorageRepository();
+    const FirebaseStorageWebRepo firebaseStorageWebRepo =
+        FirebaseStorageWebRepo();
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-    if (pickedFile != null) {
-      final File imageFile = File(pickedFile.path);
-      final String imageUrl = await firebaseStorageRepo.uploadImage(
-        image: imageFile,
-        userIdHashed: userId,
-      );
-      setState(() {
-        _imageUrl = imageUrl;
-      });
+    if (!kIsWeb) {
+      if (pickedFile != null) {
+        final imageFile = await getFileFromImagePicker(pickedFile);
+        final String imageUrl = await firebaseStorageRepo.uploadImage(
+          image: imageFile,
+          userIdHashed: userId,
+        );
+        if (!context.mounted) return;
+        setState(() {
+          _imageUrl = imageUrl;
+        });
+      }
+    } else if (kIsWeb) {
+      if (pickedFile != null) {
+        final imageFile = await getFileFromImagePicker(pickedFile);
+        final String imageUrl = await firebaseStorageWebRepo.uploadImage(
+          image: imageFile,
+          userIdHashed: userId,
+        );
+        if (!context.mounted) return;
+        setState(() {
+          _imageUrl = imageUrl;
+        });
+      }
     }
   }
 
@@ -106,7 +124,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                       ),
-                      TopButtonRow(userId: userId, uploadImage: uploadImage),
+                      TopButtonRow(
+                        userId: userId,
+                        uploadImage: uploadImage,
+                        // uploadImage: !kIsWeb ? uploadImage : uploadImageWeb,
+                      ),
                       const BottomTextColumn(),
                     ],
                   ),
