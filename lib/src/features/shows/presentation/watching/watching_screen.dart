@@ -1,8 +1,7 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watching/src/src.dart';
-
-import '../../../../../config/config.dart';
 
 class WatchingScreen extends StatelessWidget {
   const WatchingScreen({super.key});
@@ -22,17 +21,20 @@ class WatchingScreen extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Card(
-                        child: SizedBox(
-                          height: 50,
-                          width: double.infinity,
-                          child: Center(
-                            child: Text(
-                              "You are watching ${state.show.length} ${state.show.length != 1 ? 'shows' : 'show'}!",
-                              style: Theme.of(context).textTheme.displayLarge,
-                              textAlign: TextAlign.center,
+                    SizedBox(
+                      width: kIsWeb ? 700 : double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Card(
+                          child: SizedBox(
+                            height: 50,
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                "You are watching ${state.show.length} ${state.show.length != 1 ? 'shows' : 'show'}!",
+                                style: Theme.of(context).textTheme.displayLarge,
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                         ),

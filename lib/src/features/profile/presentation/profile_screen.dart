@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/features/profile/data/data.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/hash_converter.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -41,73 +43,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
     const FirebaseStorageRepository firebaseStorageRepo =
         FirebaseStorageRepository();
     final FirebaseAuthRepository firebaseAuthRepo = FirebaseAuthRepository();
-    final int userId = firebaseAuthRepo.getUser()!.uid.hashCode;
+    final int userId = customStringHash(firebaseAuthRepo.getUser()!.uid);
     return BlocProvider(
       create: (context) => AuthCubit(
         firebaseAuthRepository: firebaseAuthRepo,
       ),
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
+        body: Center(
+          child: SizedBox(
+            width: kIsWeb ? 700 : double.infinity,
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  FutureBuilder(
-                    future: firebaseStorageRepo.getImageURL(
-                      imageName: userId.toString(),
-                    ),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        _imageUrl = snapshot.data;
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const SizedBox(
-                          height: 400,
-                          child: LoadingAnimationColor(),
-                        );
-                      }
-                      if (_imageUrl == null)
-                        return const SizedBox(
-                          height: 400,
-                        );
-                      return CachedNetworkImage(
-                        width: double.infinity,
-                        height: 400,
-                        fit: BoxFit.cover,
-                        imageUrl:
-                            _imageUrl ?? 'https://via.placeholder.com/150',
-                        progressIndicatorBuilder: (context, url, progress) {
-                          return const LoadingAnimationColor();
+                  Stack(
+                    children: [
+                      FutureBuilder(
+                        future: firebaseStorageRepo.getImageURL(
+                          imageName: userId.toString(),
+                        ),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            _imageUrl = snapshot.data;
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const SizedBox(
+                              height: 430,
+                              child: LoadingAnimationColor(),
+                            );
+                          }
+                          if (_imageUrl == null)
+                            return const SizedBox(
+                              height: 430,
+                            );
+                          return CachedNetworkImage(
+                            width: double.infinity,
+                            height: 430,
+                            fit: BoxFit.cover,
+                            imageUrl:
+                                _imageUrl ?? 'https://via.placeholder.com/150',
+                            progressIndicatorBuilder: (context, url, progress) {
+                              return const LoadingAnimationColor();
+                            },
+                          );
                         },
-                      );
-                    },
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [
-                            Theme.of(context).scaffoldBackgroundColor,
-                            Colors.transparent,
-                          ],
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          height: 100,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              colors: [
+                                Theme.of(context).scaffoldBackgroundColor,
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      TopButtonRow(userId: userId, uploadImage: uploadImage),
+                      const BottomTextColumn(),
+                    ],
                   ),
-                  TopButtonRow(userId: userId, uploadImage: uploadImage),
-                  const BottomTextColumn(),
+                  const RowOfStats(),
+                  const BadgesCard(),
+                  const FavoritesCard(),
                 ],
               ),
-              const RowOfStats(),
-              const BadgesCard(),
-              const FavoritesCard(),
-            ],
+            ),
           ),
         ),
       ),
@@ -133,7 +141,7 @@ class FavoritesCard extends StatelessWidget {
             tvMazeRepository: TvMazeRepository(),
           );
           final Future<List<Show>> shows = showService.getFavoritesByUserId(
-            userId: state.user!.uid.hashCode,
+            userId: customStringHash(state.user!.uid),
           );
           return SizedBox(
             height: 200,
@@ -213,7 +221,7 @@ class BadgesCard extends StatelessWidget {
             tvMazeRepository: TvMazeRepository(),
           );
           final Future<List<Show>> completedShows = showService.getAllCompleted(
-            userId: state.user!.uid.hashCode,
+            userId: customStringHash(state.user!.uid),
           );
           return SizedBox(
             height: 150,
@@ -326,14 +334,14 @@ class RowOfStats extends StatelessWidget {
             tvMazeRepository: TvMazeRepository(),
           );
           final Future<List<Show>> completedShows = showService.getAllCompleted(
-            userId: state.user!.uid.hashCode,
+            userId: customStringHash(state.user!.uid),
           );
           final Future<List<Show>> watchingShows = showService.getAllWatching(
-            userId: state.user!.uid.hashCode,
+            userId: customStringHash(state.user!.uid),
           );
           final Future<List<Show>> planToWatchShows =
               showService.getAllPlanToWatch(
-            userId: state.user!.uid.hashCode,
+            userId: customStringHash(state.user!.uid),
           );
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),

@@ -117,6 +117,7 @@ class SupabaseServices {
     if (userList != null) {
       for (final user in userList) {
         final int userId = user as int;
+        Logger().d('User id: $userId');
         final List<int> completedShows = await getAllCompleted(userId: userId);
         final String nickName = await _supabaseRepository
             .checkUserSettingsNicknameInSupabase(userId: userId);

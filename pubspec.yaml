@@ -9,6 +9,7 @@ environment:
 dependencies:
   cached_network_image: ^3.3.1
   collection: ^1.18.0
+  crypto: ^3.0.3
   fan_carousel_image_slider: ^0.1.2
   firebase_auth: ^4.19.3
   firebase_core: ^2.30.1

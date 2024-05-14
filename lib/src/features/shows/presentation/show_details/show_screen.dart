@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/hash_converter.dart';
 
 String removePTagsAndBTags(String text) {
   final String cleanText = text.replaceAll(RegExp(r'</?(p|b)>'), '');
@@ -32,7 +34,7 @@ class ShowScreen extends StatelessWidget {
                     CachedNetworkImage(
                       width: double.infinity,
                       height: 550,
-                      fit: BoxFit.cover,
+                      fit: !kIsWeb ? BoxFit.cover : BoxFit.contain,
                       imageUrl: show?.image?.original ??
                           'https://i.imgur.com/U0xPF44.jpeg',
                       progressIndicatorBuilder: (context, url, progress) =>
@@ -93,12 +95,9 @@ class ShowScreen extends StatelessWidget {
                           context: context,
                           builder: (context) => FavoriteAlert(
                             show: show,
-                            userId: context
-                                .read<AuthCubit>()
-                                .state
-                                .user!
-                                .uid
-                                .hashCode,
+                            userId: customStringHash(
+                              context.read<AuthCubit>().state.user!.uid,
+                            ),
                           ),
                         );
                       },
@@ -125,12 +124,8 @@ class ShowScreen extends StatelessWidget {
                           context: context,
                           builder: (context) => WatchingAlert(
                             show: show,
-                            userId: context
-                                .read<AuthCubit>()
-                                .state
-                                .user!
-                                .uid
-                                .hashCode,
+                            userId: customStringHash(
+                                context.read<AuthCubit>().state.user!.uid),
                           ),
                         );
                       },

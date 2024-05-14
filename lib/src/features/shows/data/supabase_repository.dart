@@ -267,10 +267,10 @@ class SupabaseRepository {
           .single();
       return settings['isPublic'] as bool;
     } catch (error) {
-      Logger().d('User does not have settings in supabase: $error');
-      Logger().d('Creating settings row in Supabase...');
-      await createSettingsRowInSupabase(userId: userId, isPublic: false);
-      Logger().d('Created settings row in supabase!');
+      // Logger().d('User does not have settings in supabase: $error');
+      // Logger().d('Creating settings row in Supabase...');
+      // await createSettingsRowInSupabase(userId: userId, isPublic: false);
+      // Logger().d('Created settings row in supabase!');
       return false;
     }
   }
@@ -290,6 +290,7 @@ class SupabaseRepository {
   Future<String> checkUserSettingsNicknameInSupabase({
     required int userId,
   }) async {
+    Logger().d('Checking user settings $userId in Supabase...');
     try {
       final response =
           await supabase.from('Settings').select().eq('id', userId);
@@ -302,9 +303,9 @@ class SupabaseRepository {
       return settings['nickname'] as String;
     } catch (error) {
       Logger().d('User does not have settings in supabase: $error');
-      Logger().d('Creating settings row in Supabase...');
-      await createSettingsRowInSupabase(userId: userId, isPublic: false);
-      Logger().d('Created settings row in supabase!');
+      // Logger().d('Creating settings row in Supabase...');
+      // await createSettingsRowInSupabase(userId: userId, isPublic: false);
+      // Logger().d('Created settings row in supabase!');
       return '';
     }
   }

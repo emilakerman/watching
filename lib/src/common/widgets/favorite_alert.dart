@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watching/src/src.dart';
@@ -65,6 +66,7 @@ class FavoriteAlert extends StatelessWidget {
                 },
                 child: const Text("Add to Favorites"),
               ),
+              !kIsWeb ? const SizedBox() : const SizedBox(height: 15),
               ElevatedButton(
                 onPressed: () {
                   supabaseServices.toggleFavoriteShow(

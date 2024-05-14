@@ -1,4 +1,5 @@
 import 'package:fan_carousel_image_slider/fan_carousel_image_slider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watching/src/src.dart';
@@ -34,11 +35,17 @@ class _FeaturedScreenState extends State<FeaturedScreen> {
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    FanCarouselImageSlider(
-                      initalPageIndex: 0,
-                      imagesLink: strings,
-                      isAssets: false,
-                      autoPlay: true,
+                    Center(
+                      child: SizedBox(
+                        width: kIsWeb ? 500 : null,
+                        child: FanCarouselImageSlider(
+                          isClickable: kIsWeb ? false : true,
+                          initalPageIndex: 0,
+                          imagesLink: strings,
+                          isAssets: false,
+                          autoPlay: true,
+                        ),
+                      ),
                     ),
                     Flexible(
                       child: OutlinedButton(
@@ -57,36 +64,40 @@ class _FeaturedScreenState extends State<FeaturedScreen> {
                     Expanded(
                       child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Card(
-                              child: SizedBox(
-                                height: 50,
-                                width: double.infinity,
-                                child: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Featured shows",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .displayLarge,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        IconButton(
-                                          onPressed: () => setState(() {
-                                            isShowCase = true;
-                                          }),
-                                          icon: const Icon(
-                                            Icons.image_search_outlined,
+                          SizedBox(
+                            width: kIsWeb ? 700 : double.infinity,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Card(
+                                child: SizedBox(
+                                  height: 50,
+                                  width: double.infinity,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Featured shows",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displayLarge,
+                                            textAlign: TextAlign.center,
                                           ),
-                                        ),
-                                      ],
+                                          IconButton(
+                                            onPressed: () => setState(() {
+                                              isShowCase = true;
+                                            }),
+                                            icon: const Icon(
+                                              Icons.image_search_outlined,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

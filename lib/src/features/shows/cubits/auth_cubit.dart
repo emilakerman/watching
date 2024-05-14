@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/hash_converter.dart';
 
 part 'auth_cubit.freezed.dart';
 
@@ -48,17 +49,21 @@ class AuthCubit extends Cubit<AuthCubitState> {
           user: _firebaseAuthRepository.getUser(),
         ),
       );
-      // IMPORTANT: Creates the user row in Supabase with uid.hashCode
+      // IMPORTANT: Creates the user row in Supabase with uid.customStringHash
       // as userId if the user is not already in the database.
-      if (!await supabaseRepository.checkIfUserExistsInSupabase(
-        userId: _firebaseAuthRepository.getUser()!.uid.hashCode,
-      )) {
-        await supabaseRepository.createUserRowInSupaBase(
-          userId: _firebaseAuthRepository.getUser()!.uid.hashCode,
-        );
-      } else {
-        return;
-      }
+      // if (!await supabaseRepository.checkIfUserExistsInSupabase(
+      //   userId: _firebaseAuthRepository.getUser()!.uid.customStringHash,
+      // )) {
+      await supabaseRepository.createUserRowInSupaBase(
+        userId: customStringHash(_firebaseAuthRepository.getUser()!.uid),
+      );
+      await supabaseRepository.createSettingsRowInSupabase(
+        userId: customStringHash(_firebaseAuthRepository.getUser()!.uid),
+        isPublic: false,
+      );
+      // } else {
+      //   return;
+      // }
     } catch (error) {
       Logger().d('Error: $error');
       emit(
@@ -111,17 +116,17 @@ class AuthCubit extends Cubit<AuthCubitState> {
           user: _firebaseAuthRepository.getUser(),
         ),
       );
-      // IMPORTANT: Creates the user row in Supabase with uid.hashCode
-      // as userId if the user is not already in the database.
-      if (!await supabaseRepository.checkIfUserExistsInSupabase(
-        userId: _firebaseAuthRepository.getUser()!.uid.hashCode,
-      )) {
-        await supabaseRepository.createUserRowInSupaBase(
-          userId: _firebaseAuthRepository.getUser()!.uid.hashCode,
-        );
-      } else {
-        return;
-      }
+      // // IMPORTANT: Creates the user row in Supabase with uid.customStringHash
+      // // as userId if the user is not already in the database.
+      // if (!await supabaseRepository.checkIfUserExistsInSupabase(
+      //   userId: _firebaseAuthRepository.getUser()!.uid.customStringHash,
+      // )) {
+      //   await supabaseRepository.createUserRowInSupaBase(
+      //     userId: _firebaseAuthRepository.getUser()!.uid.customStringHash,
+      //   );
+      // } else {
+      //   return;
+      // }
     } catch (error) {
       Logger().d('Error: $error');
       emit(
