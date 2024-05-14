@@ -2,10 +2,8 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/features/profile/data/data.dart';
 import 'package:watching/src/src.dart';
@@ -27,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      File imageFile = File(pickedFile.path);
+      final File imageFile = File(pickedFile.path);
       final String imageUrl = await firebaseStorageRepo.uploadImage(
         image: imageFile,
         userIdHashed: userId,
@@ -65,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const SizedBox(
                           height: 400,
-                          child: LoadingAnimation(),
+                          child: LoadingAnimationColor(),
                         );
                       }
                       if (_imageUrl == null)
@@ -79,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         imageUrl:
                             _imageUrl ?? 'https://via.placeholder.com/150',
                         progressIndicatorBuilder: (context, url, progress) {
-                          return const LoadingAnimation();
+                          return const LoadingAnimationColor();
                         },
                       );
                     },
@@ -149,12 +147,7 @@ class FavoritesCard extends StatelessWidget {
                     future: shows,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: LoadingAnimationWidget.discreteCircle(
-                            color: Colors.purple[900]!,
-                            size: 40,
-                          ),
-                        );
+                        return const LoadingAnimationColor();
                       }
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,7 +176,7 @@ class FavoritesCard extends StatelessWidget {
                                     'https://via.placeholder.com/150',
                                 progressIndicatorBuilder:
                                     (context, url, progress) {
-                                  return const LoadingAnimation();
+                                  return const LoadingAnimationColor();
                                 },
                               ),
                             ),
@@ -235,12 +228,7 @@ class BadgesCard extends StatelessWidget {
                     builder: (context, snapshot) {
                       final List<int> badges = [];
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: LoadingAnimationWidget.discreteCircle(
-                            color: Colors.purple[900]!,
-                            size: 40,
-                          ),
-                        );
+                        return const LoadingAnimationColor();
                       }
                       void calculateBadges() {
                         switch (snapshot.data?.length ?? 1) {
@@ -354,7 +342,7 @@ class RowOfStats extends StatelessWidget {
                 future: completedShows,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const LoadingAnimation();
+                    return const LoadingAnimationColor();
                   }
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -367,7 +355,7 @@ class RowOfStats extends StatelessWidget {
                             builder: (context, watchingShows) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return const LoadingAnimation();
+                                return const LoadingAnimationColor();
                               }
                               return Text(
                                 watchingShows.data?.length.toString() ?? "0",
@@ -394,7 +382,7 @@ class RowOfStats extends StatelessWidget {
                             builder: (context, planToWatchShows) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return const LoadingAnimation();
+                                return const LoadingAnimationColor();
                               }
                               return Text(
                                 planToWatchShows.data?.length.toString() ?? "",
@@ -458,7 +446,7 @@ class BottomTextColumn extends StatelessWidget {
             return state.getUserById();
           },
           builder: (context, user) {
-            if (user?.nickname == null) return const LoadingAnimation();
+            if (user?.nickname == null) return const LoadingAnimationColor();
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -470,10 +458,7 @@ class BottomTextColumn extends StatelessWidget {
                   future: locationServies.newGetLocation(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return LoadingAnimationWidget.staggeredDotsWave(
-                        color: Colors.grey,
-                        size: 30,
-                      );
+                      return const LoadingAnimationDots();
                     } else if (snapshot.hasError) {
                       return const SizedBox.shrink();
                     } else if (snapshot.hasData) {
