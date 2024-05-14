@@ -34,187 +34,192 @@ class _AuthenticationScreenState extends State<AuthenticationScreen>
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(40),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Image.asset(
-                'assets/images/logo_3.png',
-                height: 103,
-              ),
-              const SizedBox(height: 40),
-              const Text(
-                'Welcome, friend!',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const SizedBox(height: 120),
+                Image.asset(
+                  'assets/images/logo_3.png',
+                  height: 103,
                 ),
-              ),
-              Text(
-                'Please login or sign up.',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+                const SizedBox(height: 40),
+                const Text(
+                  'Welcome, friend!',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 40),
-              SizedBox(
-                height: 400,
-                width: double.infinity,
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    Tab(
-                      child: Column(
-                        children: [
-                          TextField(
-                            controller: emailController,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                            decoration: const InputDecoration(
-                              hintText: "Email",
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
+                Text(
+                  'Please login or sign up.',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                SizedBox(
+                  height: 400,
+                  width: double.infinity,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      Tab(
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: emailController,
+                              style: const TextStyle(
+                                color: Colors.white,
                               ),
-                            ),
-                          ),
-                          TextField(
-                            obscureText: true,
-                            controller: passwordController,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                            decoration: const InputDecoration(
-                              hintText: "Password",
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                splashColor: Colors.green[900],
-                                onTap: () => _tabController.animateTo(1),
-                                child: const Text(
-                                  "Sign up",
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                  ),
+                              decoration: const InputDecoration(
+                                hintText: "Email",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
                                 ),
                               ),
-                              BlocBuilder<AuthCubit, AuthCubitState>(
-                                builder: (context, state) {
-                                  if (state.isLoading) {
-                                    return const LoadingAnimation();
-                                  }
-                                  return ElevatedButton(
-                                    onPressed: () =>
-                                        context.read<AuthCubit>().signInUser(
-                                              context,
-                                              email: emailController.text,
-                                              password: passwordController.text,
-                                            ),
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                        const Color.fromARGB(255, 68, 68, 84),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      "Login",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  );
-                                },
+                            ),
+                            TextField(
+                              obscureText: true,
+                              controller: passwordController,
+                              style: const TextStyle(
+                                color: Colors.white,
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Tab(
-                      child: Column(
-                        children: [
-                          TextField(
-                            controller: emailController,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                            decoration: const InputDecoration(
-                              hintText: "Email",
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                          TextField(
-                            obscureText: true,
-                            controller: passwordController,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                            decoration: const InputDecoration(
-                              hintText: "Password",
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                splashColor: Colors.green[900],
-                                onTap: () => _tabController.animateTo(0),
-                                child: const Text(
-                                  "Sign in",
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                  ),
+                              decoration: const InputDecoration(
+                                hintText: "Password",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
                                 ),
                               ),
-                              BlocBuilder<AuthCubit, AuthCubitState>(
-                                builder: (context, state) {
-                                  return ElevatedButton(
-                                    onPressed: () =>
-                                        context.read<AuthCubit>().createUser(
-                                              context,
-                                              email: emailController.text,
-                                              password: passwordController.text,
-                                            ),
-                                    style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                        const Color.fromARGB(255, 68, 68, 84),
-                                      ),
+                            ),
+                            const SizedBox(height: 40),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                  splashColor: Colors.green[900],
+                                  onTap: () => _tabController.animateTo(1),
+                                  child: const Text(
+                                    "Sign up",
+                                    style: TextStyle(
+                                      color: Colors.blue,
                                     ),
-                                    child: const Text(
-                                      "Create Account",
-                                      style: TextStyle(
-                                        color: Colors.white,
+                                  ),
+                                ),
+                                BlocBuilder<AuthCubit, AuthCubitState>(
+                                  builder: (context, state) {
+                                    if (state.isLoading) {
+                                      return const LoadingAnimation();
+                                    }
+                                    return ElevatedButton(
+                                      onPressed: () => context
+                                          .read<AuthCubit>()
+                                          .signInUser(
+                                            context,
+                                            email: emailController.text,
+                                            password: passwordController.text,
+                                          ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                          const Color.fromARGB(255, 68, 68, 84),
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
+                                      child: const Text(
+                                        "Login",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Tab(
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: emailController,
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: "Email",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            TextField(
+                              obscureText: true,
+                              controller: passwordController,
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: "Password",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 40),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                  splashColor: Colors.green[900],
+                                  onTap: () => _tabController.animateTo(0),
+                                  child: const Text(
+                                    "Sign in",
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                ),
+                                BlocBuilder<AuthCubit, AuthCubitState>(
+                                  builder: (context, state) {
+                                    return ElevatedButton(
+                                      onPressed: () => context
+                                          .read<AuthCubit>()
+                                          .createUser(
+                                            context,
+                                            email: emailController.text,
+                                            password: passwordController.text,
+                                          ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                          const Color.fromARGB(255, 68, 68, 84),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "Create Account",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

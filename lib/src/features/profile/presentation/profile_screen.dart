@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/features/profile/data/data.dart';
 import 'package:watching/src/src.dart';
@@ -148,7 +149,12 @@ class FavoritesCard extends StatelessWidget {
                     future: shows,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const LoadingAnimation();
+                        return Center(
+                          child: LoadingAnimationWidget.discreteCircle(
+                            color: Colors.purple[900]!,
+                            size: 40,
+                          ),
+                        );
                       }
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,10 +235,15 @@ class BadgesCard extends StatelessWidget {
                     builder: (context, snapshot) {
                       final List<int> badges = [];
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const LoadingAnimation();
+                        return Center(
+                          child: LoadingAnimationWidget.discreteCircle(
+                            color: Colors.purple[900]!,
+                            size: 40,
+                          ),
+                        );
                       }
                       void calculateBadges() {
-                        switch (snapshot.data!.length) {
+                        switch (snapshot.data?.length ?? 1) {
                           case >= 1:
                             badges.add(1);
                             break;
@@ -459,16 +470,19 @@ class BottomTextColumn extends StatelessWidget {
                   future: locationServies.newGetLocation(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const LoadingAnimation();
+                      return LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.grey,
+                        size: 30,
+                      );
                     } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
+                      return const SizedBox.shrink();
                     } else if (snapshot.hasData) {
                       return Text('📍 Location: ${snapshot.data}');
                     } else {
                       return const SizedBox.shrink();
                     }
                   },
-                )
+                ),
               ],
             );
           },
