@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logger/logger.dart';
-import 'package:watching/config/enums/list_types.dart';
 import 'package:watching/src/src.dart';
 
 String removePTagsAndBTags(String text) {
@@ -126,7 +124,6 @@ class ShowScreen extends StatelessWidget {
                           barrierDismissible: false,
                           context: context,
                           builder: (context) => WatchingAlert(
-                            listType: ListType.searchView,
                             show: show,
                             userId: context
                                 .read<AuthCubit>()

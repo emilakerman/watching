@@ -39,7 +39,6 @@ class PlanToWatchScreen extends StatelessWidget {
                     ),
                     SearchView(
                       shows: state.show,
-                      listType: ListType.planToWatch,
                       deleteFeature: true,
                     ),
                   ],
