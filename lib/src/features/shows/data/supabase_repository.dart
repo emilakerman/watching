@@ -50,6 +50,36 @@ class SupabaseRepository {
     }
   }
 
+  Future<String> checkIfShowExistsInSupabase({
+    required int userId,
+    required int showid,
+  }) async {
+    String returnedValue = '';
+    try {
+      final show = await supabase
+          .from('Shows')
+          .select('shows')
+          .eq('userId', userId)
+          .single();
+
+      show['shows'].asMap().forEach((index, value) {
+        if (value['showid'] == showid) {
+          Logger().d(
+            'Show exists in users Supabase with status: ${value['status']}',
+          );
+          returnedValue = value['status'] as String;
+        } else {
+          Logger().d('Show not found in users Supabase');
+          return returnedValue;
+        }
+      });
+      return returnedValue;
+    } catch (error) {
+      Logger().d('Error checking if show exists in supabase: $error');
+      return returnedValue;
+    }
+  }
+
   Future<void> addNewShow({
     required int userId,
     required int showid,
@@ -63,8 +93,11 @@ class SupabaseRepository {
           .eq('userId', userId)
           .single();
 
-      show['shows'].asMap().forEach((index, value) {
-        if (value['showid'] == showid) {
+      dynamic alreadyExistingShow;
+
+      show['shows'].asMap().forEach((index, supabaseShow) {
+        if (supabaseShow['showid'] == showid) {
+          alreadyExistingShow = supabaseShow;
           showExists = true;
         }
       });
@@ -75,12 +108,12 @@ class SupabaseRepository {
           'status': showStatus,
           'favorite': false,
         });
-      } else {
-        Logger().d('Show already exists in Supabase');
-        if (show['status'] == showStatus) {
+        await supabase.from('Shows').update(show).eq('userId', userId);
+      } else if (showExists) {
+        if (alreadyExistingShow['status'] == showStatus) {
           Logger().d('Not proceeding with publishing or updating.');
           return;
-        } else if (show['status'] != showStatus) {
+        } else if (alreadyExistingShow['status'] != showStatus) {
           await updateStatusOfShow(
             userId: userId,
             showid: showid,
@@ -90,8 +123,6 @@ class SupabaseRepository {
           return;
         }
       }
-
-      await supabase.from('Shows').update(show).eq('userId', userId);
       Logger().d('New show added to Supabase');
     } catch (error) {
       Logger().d('Error adding new show to Supabase: $error');

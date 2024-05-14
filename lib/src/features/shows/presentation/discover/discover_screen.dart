@@ -65,7 +65,6 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                 ),
                 SearchView(
                   shows: shows,
-                  listType: ListType.searchView,
                   deleteFeature: false,
                 ),
               ],
@@ -252,12 +251,10 @@ class SearchView extends StatelessWidget {
   const SearchView({
     required this.shows,
     required this.deleteFeature,
-    required this.listType,
     super.key,
   });
   final List<Show> shows;
   final bool deleteFeature;
-  final ListType listType;
   @override
   Widget build(BuildContext context) {
     final FirebaseAuthRepository firebaseAuthRepository =
@@ -348,7 +345,6 @@ class SearchView extends StatelessWidget {
                                       builder: (context) => WatchingAlert(
                                         show: show,
                                         userId: userId,
-                                        listType: listType,
                                       ),
                                     );
                                   },

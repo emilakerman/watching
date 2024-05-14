@@ -40,7 +40,6 @@ class WatchingScreen extends StatelessWidget {
                     ),
                     SearchView(
                       shows: state.show,
-                      listType: ListType.watching,
                       deleteFeature: true,
                     ),
                   ],
