@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:watching/core/navigation/navigation.dart';
 import 'package:watching/src/features/shows/presentation/discover/genres.dart';
 import 'package:watching/src/features/shows/presentation/discover/languages.dart';
@@ -45,7 +46,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     return BlocBuilder<ShowCubit, ShowCubitState>(
       builder: (context, ShowCubitState state) {
         if (state.isLoading) {
-          return const LoadingAnimation();
+          return const LoadingAnimationColor();
         } else if (state.isError) {
           return const Center(
             child: Text('Error fetching shows'),
@@ -338,7 +339,7 @@ class SearchView extends StatelessWidget {
                                   height: 120,
                                   progressIndicatorBuilder:
                                       (context, url, progress) {
-                                    return const LoadingAnimation();
+                                    return const LoadingAnimationColor();
                                   },
                                 ),
                                 Column(

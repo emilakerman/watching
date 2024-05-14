@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:watching/src/src.dart';
 
 class AuthenticationScreen extends StatefulWidget {
@@ -155,7 +156,11 @@ class LoginContainer extends StatelessWidget {
                           BlocBuilder<AuthCubit, AuthCubitState>(
                             builder: (context, state) {
                               if (state.isLoading) {
-                                return const LoadingAnimation();
+                                return LoadingAnimationWidget
+                                    .horizontalRotatingDots(
+                                  color: Colors.blue[600]!,
+                                  size: 40,
+                                );
                               }
                               return ElevatedButton(
                                 onPressed: () =>
@@ -227,6 +232,13 @@ class LoginContainer extends StatelessWidget {
                           ),
                           BlocBuilder<AuthCubit, AuthCubitState>(
                             builder: (context, state) {
+                              if (state.isLoading) {
+                                return LoadingAnimationWidget
+                                    .horizontalRotatingDots(
+                                  color: Colors.blue[600]!,
+                                  size: 40,
+                                );
+                              }
                               return ElevatedButton(
                                 onPressed: () =>
                                     context.read<AuthCubit>().createUser(
