@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/hash_converter.dart';
 
 import '../../../../core/core.dart';
 
@@ -36,7 +37,7 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
   final LocallyStoredShows _localShows = LocallyStoredShows();
 
   Future<void> getAllWatching() async {
-    final userId = _authRepository.getUser()!.uid.hashCode;
+    final userId = customStringHash(_authRepository.getUser()!.uid);
     try {
       emit(state.copyWith(status: SupabaseCubitStatus.loading));
       final List<Show> fetchedShows = await _showService.getAllWatching(
@@ -60,7 +61,7 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
   }
 
   Future<void> getAllCompleted() async {
-    final userId = _authRepository.getUser()!.uid.hashCode;
+    final userId = customStringHash(_authRepository.getUser()!.uid);
 
     try {
       emit(state.copyWith(status: SupabaseCubitStatus.loading));
@@ -85,7 +86,7 @@ class SupabaseCubit extends Cubit<SupabaseCubitState> {
   }
 
   Future<void> getAllPlanToWatch() async {
-    final userId = _authRepository.getUser()!.uid.hashCode;
+    final userId = customStringHash(_authRepository.getUser()!.uid);
 
     try {
       emit(state.copyWith(status: SupabaseCubitStatus.loading));

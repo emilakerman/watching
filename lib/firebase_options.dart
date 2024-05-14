@@ -41,13 +41,13 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: '',
-    appId: '',
-    messagingSenderId: '',
-    projectId: 'watching-development',
-    authDomain: 'watching-development.firebaseapp.com',
-    storageBucket: 'watching-development.appspot.com',
+  static FirebaseOptions web = FirebaseOptions(
+    apiKey: dotenv.env['webApiKey']!,
+    appId: dotenv.env['webAppId']!,
+    messagingSenderId: dotenv.env['messagingSenderId']!,
+    projectId: dotenv.env['projectId']!,
+    authDomain: dotenv.env['authDomain']!,
+    storageBucket: dotenv.env['storageBucket']!,
   );
 
   static FirebaseOptions android = FirebaseOptions(

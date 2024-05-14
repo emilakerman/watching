@@ -1,12 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:watching/config/config.dart';
 import 'package:watching/core/navigation/navigation.dart';
 import 'package:watching/src/features/shows/presentation/discover/genres.dart';
 import 'package:watching/src/features/shows/presentation/discover/languages.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/hash_converter.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -54,13 +55,16 @@ class _DiscoverScreenState extends State<DiscoverScreen>
           return Scaffold(
             body: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  child: SearchWidget(
-                    searchController: searchController,
-                    resetSearch: () {
-                      context.read<ShowCubit>().getAllShows();
-                    },
+                SizedBox(
+                  width: kIsWeb ? 700 : double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    child: SearchWidget(
+                      searchController: searchController,
+                      resetSearch: () {
+                        context.read<ShowCubit>().getAllShows();
+                      },
+                    ),
                   ),
                 ),
                 SearchView(
@@ -259,7 +263,7 @@ class SearchView extends StatelessWidget {
   Widget build(BuildContext context) {
     final FirebaseAuthRepository firebaseAuthRepository =
         FirebaseAuthRepository();
-    final userId = firebaseAuthRepository.getUser()?.uid.hashCode;
+    final int userId = customStringHash(firebaseAuthRepository.getUser()!.uid);
     if (userId == null) {
       return const Center(
         child: Text('User not found'),
@@ -267,113 +271,118 @@ class SearchView extends StatelessWidget {
     }
     final TextTheme textTheme = Theme.of(context).textTheme;
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: ListView.builder(
-          itemCount: shows.length,
-          itemBuilder: (context, index) {
-            if (index >= shows.length) return null;
-            final Show show = shows[index];
-            return InkWell(
-              onTap: () {
-                context.pushNamed(
-                  WatchingRoutesNames.show,
-                  pathParameters: {
-                    'showId': show.id.toString(),
+      child: Center(
+        child: SizedBox(
+          width: kIsWeb ? 700 : double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: ListView.builder(
+              itemCount: shows.length,
+              itemBuilder: (context, index) {
+                if (index >= shows.length) return null;
+                final Show show = shows[index];
+                return InkWell(
+                  onTap: () {
+                    context.pushNamed(
+                      WatchingRoutesNames.show,
+                      pathParameters: {
+                        'showId': show.id.toString(),
+                      },
+                    );
                   },
-                );
-              },
-              child: SizedBox(
-                height: 120,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  color: const Color(0xff1b1b29),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 10,
-                            top: 10,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                show.name,
-                                style: textTheme.displayLarge,
-                              ),
-                              Text(
-                                show.language,
-                                style: textTheme.displayMedium?.copyWith(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                show.genres.join(', '),
-                                style: textTheme.displayMedium,
-                              ),
-                            ],
-                          ),
-                        ),
+                  child: SizedBox(
+                    height: 120,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: show.image?.medium ??
-                                  'https://i.imgur.com/U0xPF44.jpeg',
-                              width: 90,
-                              height: 120,
-                              progressIndicatorBuilder:
-                                  (context, url, progress) {
-                                return const LoadingAnimation();
-                              },
+                      color: const Color(0xff1b1b29),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                top: 10,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    show.name,
+                                    style: textTheme.displayLarge,
+                                  ),
+                                  Text(
+                                    show.language,
+                                    style: textTheme.displayMedium?.copyWith(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  Text(
+                                    show.genres.join(', '),
+                                    style: textTheme.displayMedium,
+                                  ),
+                                ],
+                              ),
                             ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                IconButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      builder: (context) => WatchingAlert(
-                                        show: show,
-                                        userId: userId,
-                                      ),
-                                    );
+                                CachedNetworkImage(
+                                  imageUrl: show.image?.medium ??
+                                      'https://i.imgur.com/U0xPF44.jpeg',
+                                  width: 90,
+                                  height: 120,
+                                  progressIndicatorBuilder:
+                                      (context, url, progress) {
+                                    return const LoadingAnimation();
                                   },
-                                  icon: const Icon(Icons.add),
                                 ),
-                                deleteFeature
-                                    ? IconButton(
-                                        onPressed: () {
-                                          context
-                                              .read<SupabaseCubit>()
-                                              .removeShow(
-                                                userId: userId,
-                                                showid: show.id,
-                                              );
-                                        },
-                                        icon: const Icon(Icons.delete),
-                                      )
-                                    : const SizedBox.shrink(),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                          barrierDismissible: false,
+                                          context: context,
+                                          builder: (context) => WatchingAlert(
+                                            show: show,
+                                            userId: userId,
+                                          ),
+                                        );
+                                      },
+                                      icon: const Icon(Icons.add),
+                                    ),
+                                    deleteFeature
+                                        ? IconButton(
+                                            onPressed: () {
+                                              context
+                                                  .read<SupabaseCubit>()
+                                                  .removeShow(
+                                                    userId: userId,
+                                                    showid: show.id,
+                                                  );
+                                            },
+                                            icon: const Icon(Icons.delete),
+                                          )
+                                        : const SizedBox.shrink(),
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
+                );
+              },
+            ),
+          ),
         ),
       ),
     );

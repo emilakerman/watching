@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logger/logger.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/hash_converter.dart';
 
 part 'settings_cubit.freezed.dart';
 
@@ -22,7 +23,7 @@ class SettingsCubitState with _$SettingsCubitState {
 
   Settings? getUserById() {
     final FirebaseAuthRepository firebaseAuthRepo = FirebaseAuthRepository();
-    final int userId = firebaseAuthRepo.getUser()!.uid.hashCode;
+    final int userId = customStringHash(firebaseAuthRepo.getUser()!.uid);
     // Error handling if user is not the in settings table.
     return settings?.firstWhere(
       (user) => user.userId == userId,

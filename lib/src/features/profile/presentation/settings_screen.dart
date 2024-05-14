@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/hash_converter.dart';
 
 class TileDivider extends StatelessWidget {
   const TileDivider({super.key});
@@ -33,7 +36,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadInitialSettings() async {
-    final int userId = firebaseAuthRepository.getUser()!.uid.hashCode;
+    final int userId = customStringHash(firebaseAuthRepository.getUser()!.uid);
+    Logger().i('User ID: $userId');
     final bool publicStatus =
         await supabaseRepository.checkUserSettingsInSupabase(
       userId: userId,
@@ -48,7 +52,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _updatePublicSetting(bool newValue, String nickName) async {
-    final int userId = firebaseAuthRepository.getUser()!.uid.hashCode;
+    final int userId = customStringHash(firebaseAuthRepository.getUser()!.uid);
     await context.read<SettingsCubit>().updateSettingsRowInSupabase(
           userId: userId,
           isPublic: newValue,

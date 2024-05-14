@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
@@ -54,62 +55,65 @@ class WatchingAlert extends StatelessWidget {
             );
           }
           return FutureBuilder<String>(
-              future: existingStatus,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox(height: 100, child: LoadingAnimation());
-                }
-                Logger().d(snapshot.data);
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text("Select show status:", style: textStyle.titleLarge),
-                    const SizedBox(),
-                    const SizedBox(height: 15),
-                    if (snapshot.data != 'watching')
-                      ElevatedButton(
-                        onPressed: () {
-                          context.read<SupabaseCubit>().addNewShow(
-                                userId: userId,
-                                showid: show.id,
-                                showStatus: 'watching',
-                                show: show,
-                              );
-                        },
-                        child: const Text("Watching"),
-                      ),
-                    if (snapshot.data != 'plan-to-watch')
-                      ElevatedButton(
-                        onPressed: () {
-                          context.read<SupabaseCubit>().addNewShow(
-                                userId: userId,
-                                showid: show.id,
-                                showStatus: 'plan-to-watch',
-                                show: show,
-                              );
-                        },
-                        child: const Text("Plan to Watch"),
-                      ),
-                    if (snapshot.data != 'completed')
-                      ElevatedButton(
-                        onPressed: () {
-                          context.read<SupabaseCubit>().addNewShow(
-                                userId: userId,
-                                showid: show.id,
-                                showStatus: 'completed',
-                                show: show,
-                              );
-                        },
-                        child: const Text("Completed"),
-                      ),
-                    CupertinoButton(
-                      onPressed: Navigator.of(context).pop,
-                      child: const Text('Close Dialog'),
+            future: existingStatus,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox(height: 100, child: LoadingAnimation());
+              }
+              Logger().d(snapshot.data);
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Select show status:", style: textStyle.titleLarge),
+                  const SizedBox(),
+                  const SizedBox(height: 15),
+                  if (snapshot.data != 'watching')
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<SupabaseCubit>().addNewShow(
+                              userId: userId,
+                              showid: show.id,
+                              showStatus: 'watching',
+                              show: show,
+                            );
+                      },
+                      child: const Text("Watching"),
                     ),
-                  ],
-                );
-              });
+                  !kIsWeb ? const SizedBox() : const SizedBox(height: 15),
+                  if (snapshot.data != 'plan-to-watch')
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<SupabaseCubit>().addNewShow(
+                              userId: userId,
+                              showid: show.id,
+                              showStatus: 'plan-to-watch',
+                              show: show,
+                            );
+                      },
+                      child: const Text("Plan to Watch"),
+                    ),
+                  !kIsWeb ? const SizedBox() : const SizedBox(height: 15),
+                  if (snapshot.data != 'completed')
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<SupabaseCubit>().addNewShow(
+                              userId: userId,
+                              showid: show.id,
+                              showStatus: 'completed',
+                              show: show,
+                            );
+                      },
+                      child: const Text("Completed"),
+                    ),
+                  CupertinoButton(
+                    onPressed: Navigator.of(context).pop,
+                    child: const Text('Close Dialog'),
+                  ),
+                ],
+              );
+            },
+          );
         },
       ),
     );
