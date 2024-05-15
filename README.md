@@ -1,16 +1,20 @@
 # watching
 TV Show Tracker called watching. Built in Flutter.
 
-## Platform
+# Platforms
 
 This application is available and optimized for iOS, Android and the web (link: https://watching-development.web.app/).
 
 
-## Tech stack
+# Tech stack
 
 Supabase PostGreSQL for backend.
 Firebase Authentication for authentication.
 TV Maze External API.
+
+# Environments
+
+This project has three only development as a flavor and the env files are inside the dotEnv.dev file (not checked in.)
 
 # Instructions to Publish to Firebase Hosting
 
