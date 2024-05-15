@@ -518,7 +518,8 @@ class TopButtonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 55, left: 15, right: 15),
+      padding:
+          const EdgeInsets.only(top: kIsWeb ? 20 : 40, left: 15, right: 15),
       child: Column(
         children: [
           Row(
@@ -547,6 +548,7 @@ class TopButtonRow extends StatelessWidget {
                 ),
                 icon: const Icon(Icons.edit),
               ),
+              kIsWeb ? const SizedBox(width: 10) : const SizedBox.shrink(),
               IconButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(

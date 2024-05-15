@@ -8,7 +8,7 @@ class LoadingAnimationColor extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: LoadingAnimationWidget.discreteCircle(
-        color: Colors.purple[900]!,
+        color: Colors.blue[600]!,
         size: 40,
       ),
     );
