@@ -17,13 +17,13 @@ TV Maze External API.
 
 
 # Cors Setup For Web to Function Properly:
-## Had to first install this:
+## Make sure this is installed first:
 ./google-cloud-sdk/install.sh  
-## Then ran this:
+## Then run this:
 echo '[{"origin": ["*"],"responseHeader": ["Content-Type"],"method": ["GET", "HEAD"],"maxAgeSeconds": 3600}]' > cors-config.json
-## login here like this: 
+## Login to google cloud like this: 
 gcloud auth login     
-## also did this:
+## Config like this:
 gcloud config set pass_credentials_to_gsutil true    
-## then do this:
+## Then finally do this:
 gsutil cors set cors-config.json gs://watching-development.appspot.com
