@@ -8,6 +8,7 @@ class LeaderboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<LeaderboardCubit>().fetchAllPublicUsers();
     return BlocBuilder<LeaderboardCubit, LeaderboardCubitState>(
       builder: (context, state) {
         return Scaffold(

@@ -30,6 +30,7 @@ class WatchingAlert extends StatelessWidget {
             return const SizedBox(height: 100, child: LoadingAnimation());
           if (state.isSuccess) {
             Future.delayed(const Duration(milliseconds: 200), () {
+              context.read<LeaderboardCubit>().fetchAllPublicUsers();
               Navigator.of(context).pop();
             });
             return Column(

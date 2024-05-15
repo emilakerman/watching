@@ -24,9 +24,7 @@ class LeaderboardCubitState with _$LeaderboardCubitState {
 class LeaderboardCubit extends Cubit<LeaderboardCubitState> {
   LeaderboardCubit({required SupabaseServices supabaseServices})
       : _supabaseServices = supabaseServices,
-        super(LeaderboardCubitState()) {
-    fetchAllPublicUsers();
-  }
+        super(LeaderboardCubitState());
 
   Future<void> fetchAllPublicUsers() async {
     emit(state.copyWith(status: LeaderboardCubitStatus.loading));
