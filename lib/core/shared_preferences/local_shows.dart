@@ -20,7 +20,8 @@ class LocallyStoredShows {
     final List<Show> currentShows = await readShows(); // Read existing shows
 
     // Create a set of existing show names for quick lookup
-    var existingShows = Set<String>.from(currentShows.map((show) => show.name));
+    final existingShows =
+        Set<String>.from(currentShows.map((show) => show.name));
 
     // Filter out shows that already exist
     final List<Show> showsToAdd =
@@ -40,8 +41,10 @@ class LocallyStoredShows {
     final encodedShows = prefs.getStringList(key);
     if (encodedShows != null) {
       final shows = encodedShows
-          .map((encodedShow) =>
-              Show.fromJson(json.decode(encodedShow) as Map<String, Object?>))
+          .map(
+            (encodedShow) =>
+                Show.fromJson(json.decode(encodedShow) as Map<String, Object?>),
+          )
           .toList();
       return shows;
     }

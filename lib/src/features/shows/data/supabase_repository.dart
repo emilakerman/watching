@@ -228,7 +228,8 @@ class SupabaseRepository {
       settings['nickname'] = nickName;
       await supabase.from('Settings').update(settings).eq('id', userId);
       Logger().d(
-          'Settings updated in Supabase with isPublic: $isPublic and nickname: $nickName');
+        'Settings updated in Supabase with isPublic: $isPublic and nickname: $nickName',
+      );
     } catch (error) {
       Logger().d('Error updating settings in supabase: $error');
     }

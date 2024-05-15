@@ -309,7 +309,6 @@ class BadgesCard extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                               itemCount: badges.length,
                               itemBuilder: (context, index) {
-                                // TODO(Any): Replace with real badges.
                                 return CircleAvatar(
                                   backgroundColor: Colors.white,
                                   child: Text(
@@ -377,7 +376,6 @@ class RowOfStats extends StatelessWidget {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // TODO(Any): Replace static numbers with real data, completed is done already.
                       Column(
                         children: [
                           FutureBuilder(

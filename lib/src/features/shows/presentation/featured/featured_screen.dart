@@ -54,7 +54,7 @@ class _FeaturedScreenState extends State<FeaturedScreen> {
                             isShowCase = false;
                           });
                         },
-                        child: Text("See details"),
+                        child: const Text("See details"),
                       ),
                     ),
                   ],
@@ -76,7 +76,8 @@ class _FeaturedScreenState extends State<FeaturedScreen> {
                                   child: Center(
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
+                                        horizontal: 10,
+                                      ),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,

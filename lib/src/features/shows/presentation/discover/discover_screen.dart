@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:watching/core/navigation/navigation.dart';
 import 'package:watching/src/features/shows/presentation/discover/genres.dart';
 import 'package:watching/src/features/shows/presentation/discover/languages.dart';
@@ -265,6 +264,7 @@ class SearchView extends StatelessWidget {
     final FirebaseAuthRepository firebaseAuthRepository =
         FirebaseAuthRepository();
     final int userId = customStringHash(firebaseAuthRepository.getUser()!.uid);
+    // ignore: unnecessary_null_comparison
     if (userId == null) {
       return const Center(
         child: Text('User not found'),

@@ -32,7 +32,8 @@ class HamburgerMenu extends StatelessWidget {
                       radius: 15,
                       child: Center(
                         child: Text(
-                            '${state.user?.email?.toUpperCase()[0] ?? ""}'),
+                          '${state.user?.email?.toUpperCase()[0] ?? ""}',
+                        ),
                       ),
                     ),
                     Flexible(

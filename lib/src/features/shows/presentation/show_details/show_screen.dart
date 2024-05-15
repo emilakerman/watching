@@ -52,7 +52,7 @@ class ShowScreen extends StatelessWidget {
                             end: Alignment.topCenter,
                             colors: [
                               Theme.of(context).scaffoldBackgroundColor,
-                              Colors.transparent
+                              Colors.transparent,
                             ],
                           ),
                         ),
@@ -125,7 +125,8 @@ class ShowScreen extends StatelessWidget {
                           builder: (context) => WatchingAlert(
                             show: show,
                             userId: customStringHash(
-                                context.read<AuthCubit>().state.user!.uid),
+                              context.read<AuthCubit>().state.user!.uid,
+                            ),
                           ),
                         );
                       },
