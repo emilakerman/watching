@@ -1,10 +1,16 @@
 # watching
-TV Show Tracker called Watching. Graduation project at IT-högskolan. Built in Flutter.
+TV Show Tracker called Watching. Built in Flutter.
 
+## Platform
+
+This application is available and optimized for iOS, Android and the web (link: https://watching-development.web.app/).
+
+
+## Tech stack
 
 Supabase PostGreSQL for backend.
-Firebase Authentication is also used.
-TV Maze External API is used (until I build my own database of shows).
+Firebase Authentication for authentication.
+TV Maze External API.
 
 
 
