@@ -484,20 +484,23 @@ class BottomTextColumn extends StatelessWidget {
                   '${user?.nickname ?? 'Anonymous user'}',
                   style: textTheme.displayLarge,
                 ),
-                FutureBuilder<String?>(
-                  future: locationServies.newGetLocation(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const LoadingAnimationDots();
-                    } else if (snapshot.hasError) {
-                      return const SizedBox.shrink();
-                    } else if (snapshot.hasData) {
-                      return Text('📍 Location: ${snapshot.data}');
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
-                ),
+                !kIsWeb
+                    ? FutureBuilder<String?>(
+                        future: locationServies.newGetLocation(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const LoadingAnimationDots();
+                          } else if (snapshot.hasError) {
+                            return const SizedBox.shrink();
+                          } else if (snapshot.hasData) {
+                            return Text('📍 Location: ${snapshot.data}');
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        },
+                      )
+                    : const SizedBox.shrink(),
               ],
             );
           },
