@@ -10,7 +10,7 @@ TV Maze External API is used (until I build my own database of shows).
 
 
 
-# CORS SETUP:
+# Cors Setup For Web to Function Properly:
 ## Had to first install this:
 ./google-cloud-sdk/install.sh  
 ## Then ran this:
