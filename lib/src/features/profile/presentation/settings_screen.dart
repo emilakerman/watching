@@ -64,6 +64,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  void _showSuccessDialog() {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        Future.delayed(const Duration(milliseconds: 500), () {
+          Navigator.of(context).pop();
+        });
+        final textStyle = Theme.of(context).textTheme;
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      Icons.check_circle_outline_outlined,
+                      color: Colors.grey.withOpacity(0.3),
+                      size: 100,
+                    ),
+                    Text(
+                      'Saved!',
+                      style: textStyle.titleLarge,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const Color tileColor = Color(0xff1c1a1e);
@@ -71,58 +107,68 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.black,
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                const ListTile(
-                  title: Text('Preferences'),
-                ),
-                const TileDivider(),
-                ListTile(
-                  tileColor: const Color(0xff1c1a1e),
-                  title: const Text('Public Account'),
-                  trailing: Switch(
-                    value: isPublicAccount,
-                    onChanged: (value) {
-                      setState(() {
-                        isPublicAccount = !isPublicAccount;
-                      });
-                    },
-                  ),
-                  onTap: () => isPublicAccount = !isPublicAccount,
-                ),
-                const TileDivider(),
-                ListTile(
-                  tileColor: tileColor,
-                  title: const Text('Nickname'),
-                  trailing: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 8),
-                      SizedBox(
-                        height: 20,
-                        width: 100,
-                        child: TextField(
-                          controller: _controller,
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: SizedBox(
+                  width: kIsWeb ? 700 : double.infinity,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const ListTile(
+                          title: Text('Preferences'),
                         ),
-                      ),
-                    ],
+                        const TileDivider(),
+                        ListTile(
+                          tileColor: const Color(0xff1c1a1e),
+                          title: const Text('Public Account'),
+                          trailing: Switch(
+                            value: isPublicAccount,
+                            onChanged: (value) {
+                              setState(() {
+                                isPublicAccount = !isPublicAccount;
+                              });
+                            },
+                          ),
+                          onTap: () => isPublicAccount = !isPublicAccount,
+                        ),
+                        const TileDivider(),
+                        ListTile(
+                          tileColor: tileColor,
+                          title: const Text('Nickname'),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                height: 20,
+                                width: 100,
+                                child: TextField(
+                                  controller: _controller,
+                                ),
+                              ),
+                            ],
+                          ),
+                          onTap: null,
+                        ),
+                        const TileDivider(),
+                        const ListTile(
+                          title: Text('Other'),
+                        ),
+                        const TileDivider(),
+                        ListTile(
+                          tileColor: tileColor,
+                          title: const Text('Sign out'),
+                          onTap: firebaseAuthRepository.signOut,
+                        ),
+                        const TileDivider(),
+                      ],
+                    ),
                   ),
-                  onTap: null,
                 ),
-                const TileDivider(),
-                const ListTile(
-                  title: Text('Other'),
-                ),
-                const TileDivider(),
-                ListTile(
-                  tileColor: tileColor,
-                  title: const Text('Sign out'),
-                  onTap: firebaseAuthRepository.signOut,
-                ),
-                const TileDivider(),
-              ],
-            ),
+              ),
+            ],
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
@@ -130,8 +176,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onPressed: () => _updatePublicSetting(
               isPublicAccount,
               _controller.text,
-            ).whenComplete(
-                () => context.read<SettingsCubit>().fetchAllSettings()),
+            ).whenComplete(() {
+              _showSuccessDialog();
+              context.read<SettingsCubit>().fetchAllSettings();
+            }),
             child: const Icon(Icons.save, size: 35),
           ),
         );
