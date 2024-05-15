@@ -14,7 +14,7 @@ TV Maze External API.
 
 # Environments
 
-This project has only development as a flavor and the env files are inside the dotEnv.dev file (not checked in.)
+This project has only development as a flavor and the env variables are inside the dotEnv.dev file (not checked in.)
 
 # Instructions to Publish to Firebase Hosting
 
