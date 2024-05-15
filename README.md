@@ -1,5 +1,5 @@
 # watching
-TV Show Tracker called Watching. Built in Flutter.
+TV Show Tracker called watching. Built in Flutter.
 
 ## Platform
 
