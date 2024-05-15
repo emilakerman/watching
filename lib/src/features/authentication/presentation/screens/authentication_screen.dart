@@ -14,15 +14,29 @@ class AuthenticationScreen extends StatefulWidget {
 class _AuthenticationScreenState extends State<AuthenticationScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final FocusNode emailFocusNode = FocusNode();
+  final FocusNode passwordFocusNode = FocusNode();
+  bool isTextFieldFocused = false;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    emailFocusNode.addListener(_onFocusChange);
+    passwordFocusNode.addListener(_onFocusChange);
     super.initState();
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      isTextFieldFocused =
+          emailFocusNode.hasFocus || passwordFocusNode.hasFocus;
+    });
   }
 
   @override
   void dispose() {
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
     _tabController.dispose();
     super.dispose();
   }
@@ -39,6 +53,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen>
           child: !kIsWeb
               ? SingleChildScrollView(
                   child: LoginContainer(
+                    isTextFieldFocused: isTextFieldFocused,
+                    emailFocusNode: emailFocusNode,
+                    passwordFocusNode: passwordFocusNode,
                     tabController: _tabController,
                     emailController: emailController,
                     passwordController: passwordController,
@@ -50,6 +67,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen>
                   child: SingleChildScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     child: LoginContainer(
+                      isTextFieldFocused: isTextFieldFocused,
+                      emailFocusNode: emailFocusNode,
+                      passwordFocusNode: passwordFocusNode,
                       tabController: _tabController,
                       emailController: emailController,
                       passwordController: passwordController,
@@ -67,13 +87,18 @@ class LoginContainer extends StatelessWidget {
     required TabController tabController,
     required this.emailController,
     required this.passwordController,
+    required this.isTextFieldFocused,
+    required this.emailFocusNode,
+    required this.passwordFocusNode,
     super.key,
   }) : _tabController = tabController;
 
   final TabController _tabController;
   final TextEditingController emailController;
   final TextEditingController passwordController;
-
+  final bool isTextFieldFocused;
+  final FocusNode emailFocusNode;
+  final FocusNode passwordFocusNode;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -82,11 +107,16 @@ class LoginContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          const SizedBox(height: 120),
-          Image.asset(
-            'assets/images/logo_3.png',
-            height: 103,
-          ),
+          const SizedBox(height: kIsWeb ? 10 : 50),
+          !isTextFieldFocused || MediaQuery.of(context).size.width > 900
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 70),
+                  child: Image.asset(
+                    'assets/images/logo_3.png',
+                    height: 103,
+                  ),
+                )
+              : const SizedBox.shrink(),
           const SizedBox(height: 40),
           const Text(
             'Welcome, friend!',
@@ -115,6 +145,7 @@ class LoginContainer extends StatelessWidget {
                   child: Column(
                     children: [
                       TextField(
+                        focusNode: emailFocusNode,
                         controller: emailController,
                         style: const TextStyle(
                           color: Colors.white,
@@ -127,6 +158,7 @@ class LoginContainer extends StatelessWidget {
                         ),
                       ),
                       TextField(
+                        focusNode: passwordFocusNode,
                         obscureText: true,
                         controller: passwordController,
                         style: const TextStyle(
