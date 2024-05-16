@@ -224,6 +224,7 @@ class LoginContainer extends StatelessWidget {
                   child: Column(
                     children: [
                       TextField(
+                        focusNode: emailFocusNode,
                         controller: emailController,
                         style: const TextStyle(
                           color: Colors.white,
@@ -236,6 +237,7 @@ class LoginContainer extends StatelessWidget {
                         ),
                       ),
                       TextField(
+                        focusNode: passwordFocusNode,
                         obscureText: true,
                         controller: passwordController,
                         style: const TextStyle(
