@@ -4,6 +4,8 @@ TV Show Tracker called watching. Built in Flutter.
 # Demo Videos
 
 Demo of the web version: https://www.youtube.com/watch?v=kzy7JBt9tS8
+
+
 Demo of the app version: https://www.youtube.com/watch?v=pJKmsDCdPFQ
 
 # Platforms
