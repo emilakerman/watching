@@ -117,7 +117,12 @@ class LoginContainer extends StatelessWidget {
                   ),
                 )
               : const SizedBox.shrink(),
-          const SizedBox(height: 40),
+          SizedBox(
+            height:
+                !isTextFieldFocused || MediaQuery.of(context).size.width > 900
+                    ? 40
+                    : 10,
+          ),
           const Text(
             'Welcome, friend!',
             style: TextStyle(
@@ -134,7 +139,12 @@ class LoginContainer extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 40),
+          SizedBox(
+            height:
+                !isTextFieldFocused || MediaQuery.of(context).size.width > 900
+                    ? 40
+                    : 10,
+          ),
           SizedBox(
             height: 400,
             width: double.infinity,
