@@ -11,9 +11,9 @@ final watchingRoutes = [
   ShellRoute(
     builder: (context, state, child) {
       final isOnLoginPage = state.fullPath == WatchingRoutesNames.root.path;
-      final isOnProfilePage = state.fullPath == '/discover/profile:userId';
+      final isOnProfilePage = state.fullPath == '/discover/profile/:userId';
       final isOnSettingsPage =
-          state.fullPath == '/discover/profile:userId/settings';
+          state.fullPath == '/discover/profile/:userId/settings';
       final isOnShowPage = state.fullPath!.contains('show');
       if (isOnLoginPage) {
         return child;
@@ -30,6 +30,11 @@ final watchingRoutes = [
                       ? BackButton(
                           onPressed: () => context.goNamed(
                             WatchingRoutesNames.profile,
+                            pathParameters: {
+                              'userId': customStringHash(
+                                      firebaseAuthRepo.getUser()!.uid)
+                                  .toString(),
+                            },
                           ),
                         )
                       : null,
