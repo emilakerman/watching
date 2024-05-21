@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/web.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/features/profile/data/data.dart';
 import 'package:watching/src/src.dart';
@@ -232,6 +233,29 @@ class BadgesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<int> calculateBadges(length) {
+      List<int> returnedValue;
+      switch (length ?? 1) {
+        case >= 1 && < 10:
+          returnedValue = [1];
+        case >= 10 && < 50:
+          returnedValue = [1, 10];
+        case >= 50 && < 100:
+          returnedValue = [1, 10, 50];
+        case >= 100 && < 200:
+          returnedValue = [1, 10, 50, 100];
+        case >= 200 && < 500:
+          returnedValue = [1, 10, 50, 100, 200];
+        case >= 500 && < 1000:
+          returnedValue = [1, 10, 50, 100, 200, 500];
+        case >= 1000:
+          returnedValue = [1, 10, 50, 100, 200, 500, 1000];
+        default:
+          returnedValue = [];
+      }
+      return returnedValue;
+    }
+
     final textTheme = Theme.of(context).textTheme;
     return BlocProvider(
       create: (context) => AuthCubit(
@@ -256,39 +280,12 @@ class BadgesCard extends StatelessWidget {
                   child: FutureBuilder(
                     future: completedShows,
                     builder: (context, snapshot) {
-                      final List<int> badges = [];
+                      List<int> badges = [];
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const LoadingAnimationColor();
                       }
-                      void calculateBadges() {
-                        switch (snapshot.data?.length ?? 1) {
-                          case >= 1:
-                            badges.add(1);
-                            break;
-                          case >= 10:
-                            badges.add(10);
-                            break;
-                          case >= 50:
-                            badges.add(50);
-                            break;
-                          case >= 100:
-                            badges.add(100);
-                            break;
-                          case >= 200:
-                            badges.add(200);
-                            break;
-                          case >= 500:
-                            badges.add(500);
-                            break;
-                          case >= 1000:
-                            badges.add(1000);
-                            break;
-                          default:
-                            break;
-                        }
-                      }
 
-                      calculateBadges();
+                      badges = calculateBadges(snapshot.data?.length);
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
