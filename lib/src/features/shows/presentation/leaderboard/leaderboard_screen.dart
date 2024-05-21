@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watching/core/core.dart';
 import 'package:watching/src/src.dart';
 
 class LeaderboardScreen extends StatelessWidget {
@@ -50,6 +52,12 @@ class LeaderList extends StatelessWidget {
       itemBuilder: (context, index) {
         final user = state.users![index];
         return ListTile(
+          onTap: () => context.goNamed(
+            WatchingRoutesNames.profile,
+            pathParameters: {
+              'userId': user.userId.toString(),
+            },
+          ),
           leading: CircleAvatar(
             backgroundColor: user.color,
             child: Text(

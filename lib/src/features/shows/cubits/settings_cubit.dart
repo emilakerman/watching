@@ -21,9 +21,7 @@ class SettingsCubitState with _$SettingsCubitState {
   bool get isError => status == SettingsCubitStatus.error;
   bool get isSuccess => status == SettingsCubitStatus.success;
 
-  Settings? getUserById() {
-    final FirebaseAuthRepository firebaseAuthRepo = FirebaseAuthRepository();
-    final int userId = customStringHash(firebaseAuthRepo.getUser()!.uid);
+  Settings? getUserById(int userId) {
     // Error handling if user is not the in settings table.
     return settings?.firstWhere(
       (user) => user.userId == userId,

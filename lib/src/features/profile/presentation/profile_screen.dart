@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/web.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/features/profile/data/data.dart';
 import 'package:watching/src/src.dart';
@@ -13,8 +12,11 @@ import "file_operations_io.dart"
     if (dart.library.html) "file_operations_html.dart";
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
-
+  const ProfileScreen({
+    required this.userId,
+    super.key,
+  });
+  final int userId;
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
@@ -62,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     const FirebaseStorageRepository firebaseStorageRepo =
         FirebaseStorageRepository();
     final FirebaseAuthRepository firebaseAuthRepo = FirebaseAuthRepository();
-    final int userId = customStringHash(firebaseAuthRepo.getUser()!.uid);
+    final int userId = widget.userId;
     return BlocProvider(
       create: (context) => AuthCubit(
         firebaseAuthRepository: firebaseAuthRepo,
@@ -128,14 +130,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       TopButtonRow(
                         userId: userId,
                         uploadImage: uploadImage,
-                        // uploadImage: !kIsWeb ? uploadImage : uploadImageWeb,
                       ),
-                      const BottomTextColumn(),
+                      BottomTextColumn(userId: userId),
                     ],
                   ),
-                  const RowOfStats(),
-                  const BadgesCard(),
-                  const FavoritesCard(),
+                  RowOfStats(userId: userId),
+                  BadgesCard(userId: userId),
+                  FavoritesCard(userId: userId),
                 ],
               ),
             ),
@@ -148,9 +149,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
 class FavoritesCard extends StatelessWidget {
   const FavoritesCard({
+    required this.userId,
     super.key,
   });
-
+  final int userId;
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -164,7 +166,7 @@ class FavoritesCard extends StatelessWidget {
             tvMazeRepository: TvMazeRepository(),
           );
           final Future<List<Show>> shows = showService.getFavoritesByUserId(
-            userId: customStringHash(state.user!.uid),
+            userId: userId,
           );
           return SizedBox(
             height: 200,
@@ -228,9 +230,10 @@ class FavoritesCard extends StatelessWidget {
 
 class BadgesCard extends StatelessWidget {
   const BadgesCard({
+    required this.userId,
     super.key,
   });
-
+  final int userId;
   @override
   Widget build(BuildContext context) {
     List<int> calculateBadges(length) {
@@ -267,7 +270,7 @@ class BadgesCard extends StatelessWidget {
             tvMazeRepository: TvMazeRepository(),
           );
           final Future<List<Show>> completedShows = showService.getAllCompleted(
-            userId: customStringHash(state.user!.uid),
+            userId: userId,
           );
           return SizedBox(
             height: 150,
@@ -284,7 +287,6 @@ class BadgesCard extends StatelessWidget {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const LoadingAnimationColor();
                       }
-
                       badges = calculateBadges(snapshot.data?.length);
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,8 +339,10 @@ class BadgesCard extends StatelessWidget {
 
 class RowOfStats extends StatelessWidget {
   const RowOfStats({
+    required this.userId,
     super.key,
   });
+  final int userId;
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -352,14 +356,14 @@ class RowOfStats extends StatelessWidget {
             tvMazeRepository: TvMazeRepository(),
           );
           final Future<List<Show>> completedShows = showService.getAllCompleted(
-            userId: customStringHash(state.user!.uid),
+            userId: userId,
           );
           final Future<List<Show>> watchingShows = showService.getAllWatching(
-            userId: customStringHash(state.user!.uid),
+            userId: userId,
           );
           final Future<List<Show>> planToWatchShows =
               showService.getAllPlanToWatch(
-            userId: customStringHash(state.user!.uid),
+            userId: userId,
           );
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -455,9 +459,10 @@ class RowOfStats extends StatelessWidget {
 
 class BottomTextColumn extends StatelessWidget {
   const BottomTextColumn({
+    required this.userId,
     super.key,
   });
-
+  final int userId;
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -468,7 +473,7 @@ class BottomTextColumn extends StatelessWidget {
         padding: const EdgeInsets.only(left: 15, bottom: 15),
         child: BlocSelector<SettingsCubit, SettingsCubitState, Settings?>(
           selector: (state) {
-            return state.getUserById();
+            return state.getUserById(userId);
           },
           builder: (context, user) {
             if (user?.nickname == null) return const LoadingAnimationColor();
@@ -515,6 +520,10 @@ class TopButtonRow extends StatelessWidget {
   final Function uploadImage;
   @override
   Widget build(BuildContext context) {
+    final String id =
+        customStringHash(firebaseAuthRepo.getUser()!.uid).toString();
+    final bool notYou =
+        userId != customStringHash(FirebaseAuthRepository().getUser()!.uid);
     return Padding(
       padding:
           const EdgeInsets.only(top: kIsWeb ? 20 : 40, left: 15, right: 15),
@@ -524,7 +533,7 @@ class TopButtonRow extends StatelessWidget {
             children: [
               IconButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
+                  backgroundColor: WidgetStatePropertyAll(
                     Colors.grey[600],
                   ),
                 ),
@@ -532,33 +541,42 @@ class TopButtonRow extends StatelessWidget {
                 icon: const Icon(Icons.close),
               ),
               const Spacer(),
-              IconButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
-                    Colors.grey[600],
-                  ),
-                  iconColor: const MaterialStatePropertyAll(
-                    Colors.white,
-                  ),
-                ),
-                onPressed: () => uploadImage(
-                  userId: userId,
-                ),
-                icon: const Icon(Icons.edit),
-              ),
+              !notYou
+                  ? IconButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          Colors.grey[600],
+                        ),
+                        iconColor: const WidgetStatePropertyAll(
+                          Colors.white,
+                        ),
+                      ),
+                      onPressed: () => uploadImage(
+                        userId: userId,
+                      ),
+                      icon: const Icon(Icons.edit),
+                    )
+                  : const SizedBox.shrink(),
               kIsWeb ? const SizedBox(width: 10) : const SizedBox.shrink(),
-              IconButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
-                    Colors.grey[600],
-                  ),
-                  iconColor: const MaterialStatePropertyAll(
-                    Colors.white,
-                  ),
-                ),
-                onPressed: () => context.goNamed(WatchingRoutesNames.settings),
-                icon: const Icon(Icons.settings),
-              ),
+              !notYou
+                  ? IconButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          Colors.grey[600],
+                        ),
+                        iconColor: const WidgetStatePropertyAll(
+                          Colors.white,
+                        ),
+                      ),
+                      onPressed: () => context.goNamed(
+                        WatchingRoutesNames.settings,
+                        pathParameters: {
+                          'userId': id,
+                        },
+                      ),
+                      icon: const Icon(Icons.settings),
+                    )
+                  : const SizedBox.shrink(),
             ],
           ),
         ],

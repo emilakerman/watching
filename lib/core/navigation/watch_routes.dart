@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/src.dart';
+import 'package:watching/utils/hash_converter.dart';
 
 final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+final FirebaseAuthRepository firebaseAuthRepo = FirebaseAuthRepository();
 
 final watchingRoutes = [
   ShellRoute(
     builder: (context, state, child) {
       final isOnLoginPage = state.fullPath == WatchingRoutesNames.root.path;
-      final isOnProfilePage = state.fullPath == '/discover/profile';
-      final isOnSettingsPage = state.fullPath == '/discover/profile/settings';
+      final isOnProfilePage = state.fullPath == '/discover/profile:userId';
+      final isOnSettingsPage =
+          state.fullPath == '/discover/profile:userId/settings';
       final isOnShowPage = state.fullPath!.contains('show');
       if (isOnLoginPage) {
         return child;
@@ -25,16 +28,23 @@ final watchingRoutes = [
                   ),
                   leading: isOnSettingsPage
                       ? BackButton(
-                          onPressed: () =>
-                              context.pop(WatchingRoutesNames.profile),
+                          onPressed: () => context.goNamed(
+                            WatchingRoutesNames.profile,
+                          ),
                         )
                       : null,
                   actions: [
                     Padding(
                       padding: const EdgeInsets.only(right: 15.0),
                       child: GestureDetector(
-                        onTap: () =>
-                            context.pushNamed(WatchingRoutesNames.profile),
+                        onTap: () => context.goNamed(
+                          WatchingRoutesNames.profile,
+                          pathParameters: {
+                            'userId': customStringHash(
+                                    firebaseAuthRepo.getUser()!.uid)
+                                .toString(),
+                          },
+                        ),
                         child: const CircleAvatar(
                           radius: 15,
                           child: Center(
@@ -124,7 +134,7 @@ final _discoverRoute = GoRoute(
 
 /// --- Profile route
 final _profileRoute = GoRoute(
-  path: WatchingRoutesNames.profile,
+  path: 'profile/:userId',
   name: WatchingRoutesNames.profile,
   pageBuilder: (context, state) {
     return CustomTransitionPage(
@@ -136,8 +146,9 @@ final _profileRoute = GoRoute(
           child: child,
         );
       },
-      child: const ProfileScreen(
-        key: Key(WatchingRoutesNames.profile),
+      child: ProfileScreen(
+        userId: int.parse(state.pathParameters['userId']!),
+        key: const Key(WatchingRoutesNames.profile),
       ),
     );
   },
