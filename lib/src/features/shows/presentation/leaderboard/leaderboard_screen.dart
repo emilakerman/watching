@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watching/core/core.dart';
+import 'package:watching/src/features/profile/profile.dart';
 import 'package:watching/src/src.dart';
 
 class LeaderboardScreen extends StatelessWidget {
@@ -47,6 +49,10 @@ class LeaderList extends StatelessWidget {
   final LeaderboardCubitState state;
   @override
   Widget build(BuildContext context) {
+    String? imageUrl;
+
+    const FirebaseStorageRepository firebaseStorageRepo =
+        FirebaseStorageRepository();
     return ListView.builder(
       itemCount: state.users?.length ?? 0,
       itemBuilder: (context, index) {
@@ -58,11 +64,43 @@ class LeaderList extends StatelessWidget {
               'userId': user.userId.toString(),
             },
           ),
-          leading: CircleAvatar(
-            backgroundColor: user.color,
-            child: Text(
-              user.nickname.isNotEmpty ? user.nickname[0] : 'A',
+          leading: FutureBuilder(
+            future: firebaseStorageRepo.getImageURL(
+              imageName: user.userId.toString(),
             ),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                imageUrl = snapshot.data;
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox(
+                  height: 40,
+                  width: 40,
+                  child: LoadingAnimationColor(),
+                );
+              }
+              if (imageUrl == null)
+                return CircleAvatar(
+                  backgroundColor: user.color,
+                  child: Text(
+                    user.nickname.isNotEmpty ? user.nickname[0] : 'A',
+                  ),
+                );
+              return CircleAvatar(
+                backgroundColor: user.color,
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    width: 40,
+                    height: 40,
+                    fit: BoxFit.cover,
+                    imageUrl: imageUrl ?? 'https://via.placeholder.com/150',
+                    progressIndicatorBuilder: (context, url, progress) {
+                      return const LoadingAnimationColor();
+                    },
+                  ),
+                ),
+              );
+            },
           ),
           title: Text(
             user.nickname != '' ? user.nickname : 'Anonymous User',
