@@ -43,9 +43,11 @@ class SearchWidget extends StatelessWidget {
                       : const SizedBox.shrink(),
                   IconButton(
                     onPressed: () async {
-                      await context.read<ShowCubit>().getShowByName(
-                            showName: searchController.text,
-                          );
+                      if (searchController.text.isNotEmpty) {
+                        await context.read<ShowCubit>().getShowByName(
+                              showName: searchController.text,
+                            );
+                      }
                     },
                     icon: const Icon(Icons.search),
                   ),
