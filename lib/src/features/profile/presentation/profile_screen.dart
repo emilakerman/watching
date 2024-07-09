@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:watching/core/core.dart';
 import 'package:watching/src/features/profile/data/data.dart';
 import 'package:watching/src/src.dart';
@@ -155,7 +156,7 @@ class FavoritesCard extends StatelessWidget {
   final int userId;
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
     return BlocProvider(
       create: (context) => AuthCubit(
         firebaseAuthRepository: FirebaseAuthRepository(),
@@ -198,19 +199,35 @@ class FavoritesCard extends StatelessWidget {
                           const SizedBox(height: 10),
                           Expanded(
                             child: ListView.separated(
-                              separatorBuilder: (context, index) =>
+                              separatorBuilder: (context, _) =>
                                   const SizedBox(width: 10),
                               scrollDirection: Axis.horizontal,
                               itemCount: snapshot.data?.length ?? 0,
                               padding: const EdgeInsets.only(bottom: 10),
-                              itemBuilder: (context, index) =>
-                                  CachedNetworkImage(
-                                imageUrl: snapshot.data?[index].image?.medium ??
-                                    'https://via.placeholder.com/150',
-                                progressIndicatorBuilder:
-                                    (context, url, progress) {
-                                  return const LoadingAnimationColor();
+                              itemBuilder: (context, index) => InkWell(
+                                onTap: () {
+                                  context
+                                      .read<ShowCubit>()
+                                      .getFavoritesByUserId(userId: userId)
+                                      .then(
+                                        (_) => context.pushNamed(
+                                          WatchingRoutesNames.show,
+                                          pathParameters: {
+                                            'showId':
+                                                '${snapshot.data?[index].id}',
+                                          },
+                                        ),
+                                      );
                                 },
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      snapshot.data?[index].image?.medium ??
+                                          'https://via.placeholder.com/150',
+                                  progressIndicatorBuilder:
+                                      (context, url, progress) {
+                                    return const LoadingAnimationColor();
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -537,7 +554,13 @@ class TopButtonRow extends StatelessWidget {
                     Colors.grey[600],
                   ),
                 ),
-                onPressed: context.pop,
+                onPressed: () {
+                  context.read<ShowCubit>().emptyState().whenComplete(
+                        () => context.goNamed(
+                          WatchingRoutesNames.discover,
+                        ),
+                      );
+                },
                 icon: const Icon(Icons.close),
               ),
               const Spacer(),

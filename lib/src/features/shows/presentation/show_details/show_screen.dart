@@ -109,10 +109,10 @@ class ShowScreen extends StatelessWidget {
               const SizedBox(width: 10),
               IconButton(
                 style: ButtonStyle(
-                  fixedSize: const MaterialStatePropertyAll(
+                  fixedSize: const WidgetStatePropertyAll(
                     Size(50, 50),
                   ),
-                  backgroundColor: MaterialStatePropertyAll(
+                  backgroundColor: WidgetStatePropertyAll(
                     Colors.grey[800],
                   ),
                 ),
@@ -177,7 +177,7 @@ class ShowTextColumn extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(
+                      backgroundColor: WidgetStatePropertyAll(
                         Colors.blue[800]?.withOpacity(0.5),
                       ),
                     ),
@@ -213,7 +213,7 @@ class PopButtonRow extends StatelessWidget {
             children: [
               IconButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
+                  backgroundColor: WidgetStatePropertyAll(
                     Colors.grey[600],
                   ),
                 ),

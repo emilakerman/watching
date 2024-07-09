@@ -42,6 +42,43 @@ class ShowCubit extends Cubit<ShowCubitState> {
   final LocallyStoredDates _localStorage = LocallyStoredDates();
   final LocallyStoredShows _localShows = LocallyStoredShows();
 
+  Future<void> emptyState() async {
+    emit(
+      state.copyWith(
+        status: ShowsCubitStatus.loading,
+        shows: [],
+      ),
+    );
+    emit(
+      state.copyWith(
+        status: ShowsCubitStatus.success,
+        shows: await _localShows.readShows(),
+      ),
+    );
+  }
+
+  Future<void> getFavoritesByUserId({required int userId}) async {
+    try {
+      emit(state.copyWith(status: ShowsCubitStatus.loading));
+      final List<Show> favoriteShows =
+          await _showService.getFavoritesByUserId(userId: userId);
+      emit(
+        state.copyWith(
+          status: ShowsCubitStatus.success,
+          shows: favoriteShows,
+        ),
+      );
+    } catch (error) {
+      Logger().d(error.toString());
+      emit(
+        state.copyWith(
+          status: ShowsCubitStatus.error,
+          errorMessage: error.toString(),
+        ),
+      );
+    }
+  }
+
   Future<void> getShowByName({required String showName}) async {
     try {
       emit(state.copyWith(status: ShowsCubitStatus.loading));
