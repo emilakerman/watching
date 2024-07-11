@@ -245,12 +245,33 @@ class FavoritesCard extends StatelessWidget {
   }
 }
 
-class BadgesCard extends StatelessWidget {
+class BadgesCard extends StatefulWidget {
   const BadgesCard({
     required this.userId,
     super.key,
   });
   final int userId;
+
+  @override
+  State<BadgesCard> createState() => _BadgesCardState();
+}
+
+class _BadgesCardState extends State<BadgesCard>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<int> calculateBadges(length) {
@@ -262,7 +283,7 @@ class BadgesCard extends StatelessWidget {
           returnedValue = [1, 10];
         case >= 50 && < 100:
           returnedValue = [1, 10, 50];
-        case >= 100 && < 200:
+        case >= 100 && < 200500:
           returnedValue = [1, 10, 50, 100];
         case >= 200 && < 500:
           returnedValue = [1, 10, 50, 100, 200];
@@ -287,7 +308,7 @@ class BadgesCard extends StatelessWidget {
             tvMazeRepository: TvMazeRepository(),
           );
           final Future<List<Show>> completedShows = showService.getAllCompleted(
-            userId: userId,
+            userId: widget.userId,
           );
           return SizedBox(
             height: 150,
@@ -325,16 +346,44 @@ class BadgesCard extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                               itemCount: badges.length,
                               itemBuilder: (context, index) {
-                                return CircleAvatar(
-                                  backgroundColor: Colors.white,
-                                  child: Text(
-                                    badges[index] != 1000
-                                        ? badges[index].toString()
-                                        : "1k",
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                return SizedBox(
+                                  height: 50,
+                                  width: 50,
+                                  child: TabBarView(
+                                    controller: _tabController,
+                                    children: [
+                                      Tab(
+                                        child: GestureDetector(
+                                          onTap: () => _tabController.animateTo(
+                                            1,
+                                          ),
+                                          child: Image.asset(
+                                            'assets/images/${badges[index]}.png',
+                                            height: 50,
+                                            width: 50,
+                                          ),
+                                        ),
+                                      ),
+                                      Tab(
+                                        child: GestureDetector(
+                                          onTap: () => _tabController.animateTo(
+                                            0,
+                                          ),
+                                          child: CircleAvatar(
+                                            backgroundColor: Colors.white,
+                                            child: Text(
+                                              badges[index] != 1000
+                                                  ? badges[index].toString()
+                                                  : "1k",
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
