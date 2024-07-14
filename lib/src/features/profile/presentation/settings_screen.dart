@@ -140,12 +140,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           trailing: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const SizedBox(height: 8),
                               SizedBox(
-                                height: 20,
                                 width: 100,
                                 child: TextField(
                                   controller: _controller,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'Nickname',
+                                  ),
                                 ),
                               ),
                             ],
