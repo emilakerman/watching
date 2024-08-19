@@ -15,7 +15,9 @@ This application is available and optimized for iOS, Android and the web (link: 
 
 # Tech stack
 
-Supabase PostGreSQL for backend.
+PostGreSQL as the database hosted on Vercel.
+Node.js with Express as the backend hosted on Render
+Flutter as the frontend hosted on Firebase Hosting.
 Firebase Authentication for authentication.
 TV Maze External API.
 
