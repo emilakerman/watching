@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:watching/src/features/shows/data/node_express_repository.dart';
 import 'package:watching/src/src.dart';
 
 class AuthenticationScreen extends StatefulWidget {
@@ -101,12 +102,20 @@ class LoginContainer extends StatelessWidget {
   final FocusNode passwordFocusNode;
   @override
   Widget build(BuildContext context) {
+    final NodeExpressRepository nodeExpressRepository = NodeExpressRepository();
+    final SupabaseRepository supabaseRepository = SupabaseRepository();
     return SizedBox(
       width: 500,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          ElevatedButton(
+            onPressed: nodeExpressRepository.fetchAllPublicUsers,
+            child: const Text(
+              "Fetch",
+            ),
+          ),
           const SizedBox(height: kIsWeb ? 10 : 50),
           !isTextFieldFocused || MediaQuery.of(context).size.width > 900
               ? Padding(

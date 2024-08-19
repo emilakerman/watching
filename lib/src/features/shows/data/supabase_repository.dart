@@ -311,19 +311,21 @@ class SupabaseRepository {
     }
   }
 
-  /// -- Fetches Public Users For the Leaderboard Feature --
-  Future<List<dynamic>?> fetchAllPublicUsers() async {
-    try {
-      final response = await supabase.from('Settings').select().eq(
-            'isPublic',
-            true,
-          );
-      final ids = response.map((user) => user['id']).toList();
-      Logger().d('Users ids with public settings: $ids');
-      return ids;
-    } catch (error) {
-      Logger().d('Error fetching users with public settings: $error');
-      return null;
-    }
-  }
+  // Below migrated to node express!!!
+
+  // /// -- Fetches Public Users For the Leaderboard Feature --
+  // Future<List<dynamic>?> fetchAllPublicUsers() async {
+  //   try {
+  //     final response = await supabase.from('Settings').select().eq(
+  //           'isPublic',
+  //           true,
+  //         );
+  //     final ids = response.map((user) => user['id']).toList();
+  //     Logger().d('Users ids with public settings: $ids');
+  //     return ids;
+  //   } catch (error) {
+  //     Logger().d('Error fetching users with public settings: $error');
+  //     return null;
+  //   }
+  // }
 }

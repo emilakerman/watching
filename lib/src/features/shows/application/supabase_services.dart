@@ -1,4 +1,5 @@
 import 'package:logger/logger.dart';
+import 'package:watching/src/features/shows/data/node_express_repository.dart';
 import 'package:watching/src/src.dart';
 import 'package:watching/utils/utils.dart';
 
@@ -110,13 +111,14 @@ class SupabaseServices {
 
   /// -- Combined Public Users with their completed shows and nicknames For the Leaderboard Feature --
   Future<List<CompletedUser>> fetchAllPublicUsers() async {
+    final NodeExpressRepository nodeExpressRepository = NodeExpressRepository();
     final Future<List<dynamic>?> users =
-        _supabaseRepository.fetchAllPublicUsers();
+        nodeExpressRepository.fetchAllPublicUsers();
     final List<CompletedUser> completedUsers = [];
     final List<dynamic>? userList = await users;
     if (userList != null) {
       for (final user in userList) {
-        final int userId = user as int;
+        final int userId = int.parse(user.toString());
         Logger().d('User id: $userId');
         final List<int> completedShows = await getAllCompleted(userId: userId);
         final String nickName = await _supabaseRepository
