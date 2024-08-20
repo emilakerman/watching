@@ -202,16 +202,6 @@ class SupabaseRepository {
     }
   }
 
-  Future<List<Map<String, dynamic>>?> fetchFeaturedShows() async {
-    try {
-      Logger().d('Fetching featured shows...');
-      return await supabase.from('Featured').select().eq('id', 1);
-    } catch (error) {
-      Logger().d('Error fetching featured shows: $error');
-      return null;
-    }
-  }
-
   Future<void> updateSettingsRowInSupabase({
     required int userId,
     required bool isPublic,
@@ -312,6 +302,16 @@ class SupabaseRepository {
   }
 
   // Below migrated to node express!!!
+
+  // Future<List<Map<String, dynamic>>?> fetchFeaturedShows() async {
+  //   try {
+  //     Logger().d('Fetching featured shows...');
+  //     return await supabase.from('Featured').select().eq('id', 1);
+  //   } catch (error) {
+  //     Logger().d('Error fetching featured shows: $error');
+  //     return null;
+  //   }
+  // }
 
   // /// -- Fetches Public Users For the Leaderboard Feature --
   // Future<List<dynamic>?> fetchAllPublicUsers() async {

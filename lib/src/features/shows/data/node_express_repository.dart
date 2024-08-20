@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
 class NodeExpressRepository {
   NodeExpressRepository() {
@@ -24,6 +25,22 @@ class NodeExpressRepository {
             : null;
       }
     } catch (error) {}
+    return null;
+  }
+
+  Future<List<Map<String, dynamic>>?> fetchFeaturedShows() async {
+    final String url = '$_client$_token/featured';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final decodedData = json.decode(response.body);
+        return decodedData is List
+            ? decodedData.whereType<Map<String, dynamic>>().toList()
+            : null;
+      }
+    } catch (error) {
+      Logger().d(error);
+    }
     return null;
   }
 

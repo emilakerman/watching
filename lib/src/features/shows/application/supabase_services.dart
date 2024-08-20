@@ -8,6 +8,8 @@ class SupabaseServices {
     required SupabaseRepository supabaseRepository,
   }) : _supabaseRepository = supabaseRepository;
 
+  final NodeExpressRepository nodeExpressRepository = NodeExpressRepository();
+
   Future<void> addNewShow({
     required int userId,
     required int showid,
@@ -38,19 +40,6 @@ class SupabaseServices {
     });
     Logger().d('Favorite Show ids: $favoriteShows');
     return favoriteShows;
-  }
-
-  Future<List<int>> getAllFeaturedShows() async {
-    final List<int> featuredShows = [];
-    final jsonResponse = await _supabaseRepository.fetchFeaturedShows();
-    jsonResponse?.forEach((element) {
-      final shows = element['shows'] as List<dynamic>;
-      for (final show in shows) {
-        featuredShows.add(show['id'] as int);
-      }
-    });
-    Logger().d('Featured Show ids: $featuredShows');
-    return featuredShows;
   }
 
   Future<List<int>> getAllCompleted({required int userId}) async {
@@ -111,7 +100,6 @@ class SupabaseServices {
 
   /// -- Combined Public Users with their completed shows and nicknames For the Leaderboard Feature --
   Future<List<CompletedUser>> fetchAllPublicUsers() async {
-    final NodeExpressRepository nodeExpressRepository = NodeExpressRepository();
     final Future<List<dynamic>?> users =
         nodeExpressRepository.fetchAllPublicUsers();
     final List<CompletedUser> completedUsers = [];
@@ -134,6 +122,19 @@ class SupabaseServices {
       }
     }
     return completedUsers;
+  }
+
+  Future<List<int>> getAllFeaturedShows() async {
+    final List<int> featuredShows = [];
+    final jsonResponse = await nodeExpressRepository.fetchFeaturedShows();
+    jsonResponse?.forEach((element) {
+      final shows = element['shows'] as List<dynamic>;
+      for (final show in shows) {
+        featuredShows.add(show['id'] as int);
+      }
+    });
+    Logger().d('Featured Show ids: $featuredShows');
+    return featuredShows;
   }
 
   // -- For Settings Cubit -- //
