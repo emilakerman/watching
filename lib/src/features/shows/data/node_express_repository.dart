@@ -1,12 +1,13 @@
 import 'dart:convert';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class NodeExpressRepository {
   NodeExpressRepository() {
-    _client = 'https://watching-api.onrender.com/';
+    _client = dotenv.env['nodeEndpoint']!;
+    _token = dotenv.env['secretToken']!;
   }
 
   /// -- Fetches Public Users For the Leaderboard Feature --
@@ -43,4 +44,5 @@ class NodeExpressRepository {
   }
 
   late final String _client;
+  late final String _token;
 }
