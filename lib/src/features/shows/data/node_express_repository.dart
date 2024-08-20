@@ -12,7 +12,7 @@ class NodeExpressRepository {
 
   /// -- Fetches Public Users For the Leaderboard Feature --
   Future<List<dynamic>?> fetchAllPublicUsers() async {
-    final String url = '${_client}public-users';
+    final String url = '$_client$_token/public-users';
     try {
       final Response response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
